@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<script>
+var police = new Audio("/static/click.wav");
+function toggle_loop() {
+  if(police.loop) {
+    police.loop = false;
+    document.getElementById("looping").value = "Enable loop";
+  } else {
+    police.loop = true;
+    document.getElementById("looping").value = "Disable loop";
+  }
+}
+</script>
+<body>
+  <input type="button" value="Play" onclick="police.play()">
+  <input type="button" value="Pause" onclick="police.pause()" />
+  <input type="button" id="looping" value="Enable loop" onclick="toggle_loop()" />
+</body>
+</html>
+<!--
+Next step is to enable a push notification scenario from a server, for so checkout:
+ * http://socket.io/ for the client-side;
+ * https://flask-socketio.readthedocs.org/en/latest/ for the server-side.
+It will enable a full-Python server implementation, making things easier to
+prototype.
+Then to plot data on browser on real-time rely on https://plot.ly/javascript/.
+
+http://purecss.io/
+ -->
