@@ -1,6 +1,6 @@
 from PiPocketGeiger import RadiationWatch
-from stream import socketio
+from stream import onRadiation
 
-def onRadiation():
-    print("Ray hit")
-    socketio.send('Ray', namespace='/radiation/rays')
+radiationWatch = RadiationWatch(24, 23).setup()
+radiationWatch.registerRadiationCallback(onRadiation)
+# We need to close properly this resource at the appplication tear down.

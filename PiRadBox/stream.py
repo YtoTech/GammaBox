@@ -13,3 +13,7 @@ def handle_message(message):
 @socketio.on('connect', namespace='/chat')
 def test_connect():
     emit('my response', {'data': 'Connected'})
+
+def onRadiation():
+    print("Ray hit")
+    socketio.send('Ray', namespace='/radiation/rays')
