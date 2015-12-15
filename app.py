@@ -1,7 +1,7 @@
-from PiRadBox import app
+from PiRadBox import socketio, app
 import sys
 
 if __name__ == "__main__":
     if '-d' in sys.argv or '--debug' in sys.argv:
-        app.debug = True
-    app.run(port=80, host='0.0.0.0', threaded=True)
+        socketio.debug = True
+    socketio.run(app, port=80, host='0.0.0.0')
