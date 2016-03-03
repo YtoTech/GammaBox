@@ -7,7 +7,7 @@ try:
 except ImportError:
     import Queue as queue
 import eventlet
-eventlet.monkey_patch()
+eventlet.monkey_patch(all=False, thread=True)
 
 radiationWatch = RadiationWatch(24, 23).setup()
 # We need to close properly this resource at the appplication tear down.
@@ -26,24 +26,22 @@ def onConnect():
     # emit('historical', data, json=True)
 
 def onRadiation():
-    # TODO Get back to our main eventlet thread: how to to that?
-    # Use a Queue, then create a greenlet that poll to the queue?
-    # Or use a Python socketio client to communicate with this server.
-    print("Ray hit")
-    q.put('Hit!')
-    # socketio.emit('ray', 'Hit!')
-    # TODO Send current readings.
-    # socketio.emit('ray', readings, json=True)
+    # Get back to our main eventlet thread using a Queue
+    # to transfer the signal from the interrupt thread
+    # to the main thread.
+    # TODO Or use a Python socketio client to communicate with this server.
+    print('Ray')
+    q.put_nowait(None)
 
 def listenToQueue():
     while 1:
-        # This is fucking ugly! We're polling as hell.
         try:
-            data = q.get(block=False)
-            print(data)
+            data = q.get(True, 0.1)
             socketio.emit('ray', data)
+            # TODO Send current readings.
+            # socketio.emit('ray', readings, json=True)
         except queue.Empty:
-            eventlet.sleep(0.1)
+            pass
 
 eventlet.spawn(listenToQueue)
 
