@@ -1,45 +1,66 @@
 <!DOCTYPE html>
 <html>
-<script>
-var police = new Audio("/static/click.wav");
-function toggle_loop() {
-  if(police.loop) {
-    police.loop = false;
-    document.getElementById("looping").value = "Enable loop";
-  } else {
-    police.loop = true;
-    document.getElementById("looping").value = "Disable loop";
-  }
-}
-</script>
+<head>
+  <meta charset="utf-8">
+  <title>RadBox</title>
+  <meta name="description" content="RadBox allows to monotir background radiation level in your basement.">
+  <meta name="author" content="Yoan Tournade">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/static/css/normalize.css">
+  <link rel="stylesheet" href="/static/css/skeleton.css">
+  <link rel="stylesheet" href="/static/css/chartist.min.css">
+  <link rel="icon" type="image/png" href="/static/images/favicon.png">
+  <script src="/static/js/jquery.min.js"></script>
+  <script type="text/javascript" src="/static/js/socket.io.min.js"></script>
+  <script src="/static/js/chartist.min.js"></script>
+</head>
 <body>
-  <input type="button" value="Play" onclick="police.play()">
-  <input type="button" value="Pause" onclick="police.pause()" />
-  <input type="button" id="looping" value="Enable loop" onclick="toggle_loop()" />
+  <div class="container">
+    <div class="row">
+      <div>
+        <h3>RadBox</h3>
+      </div>
+    </div>
+    <div class="row readings">
+      <div class="one-half column">
+        <p>CPM: <span id="cpm"></span></p>
+      </div>
+      <div class="one-half column">
+        <p>Radiation level: <span id="radiation-level"></span> uSv/h</p>
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript" charset="utf-8">
+    var police = new Audio("/static/click.wav");
+    police.loop = false;
+    var socket = io.connect('http://' + document.domain + ':' + location.port);
+    socket.on('connect', function() {
+      console.log("Connected");
+      socket.on('ray', function(message) {
+        console.log("Ray");
+        console.log(message);
+        police.play();
+      });
+      socket.on('readings', function(readings) {
+        console.log(readings);
+        $(".readings #cpm").text(readings.cpm);
+        $(".readings #radiation-level").text(readings.uSvh);
+      });
+    });
+  </script>
+
+  <!--
+  Next step is to enable a push notification scenario from a server, for so checkout:
+   * http://socket.io/ for the client-side;
+   * https://flask-socketio.readthedocs.org/en/latest/ for the server-side.
+  It will enable a full-Python server implementation, making things easier to
+  prototype.
+  Then to plot data on browser on real-time rely on https://plot.ly/javascript/.
+
+  For a rapid, lightweigth design prototyping: http://purecss.io/
+   -->
 </body>
 </html>
 
-<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
-<script type="text/javascript" charset="utf-8">
-  // TODO Please read the doc: http://socket.io/docs/
-  var socket = io.connect('http://' + document.domain + ':' + location.port);
-  socket.on('connect', function() {
-    console.log("Connected");
-    socket.on('message', function(message) {
-      console.log("message");
-      console.log(message);
-    });
-    socket.emit('my event', {data: 'I\'m connected!'});
-  });
-</script>
-
-<!--
-Next step is to enable a push notification scenario from a server, for so checkout:
- * http://socket.io/ for the client-side;
- * https://flask-socketio.readthedocs.org/en/latest/ for the server-side.
-It will enable a full-Python server implementation, making things easier to
-prototype.
-Then to plot data on browser on real-time rely on https://plot.ly/javascript/.
-
-For a rapid, lightweigth design prototyping: http://purecss.io/
- -->
