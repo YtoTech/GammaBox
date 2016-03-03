@@ -44,7 +44,6 @@
         police.play();
       });
       socket.on('readings', function(readings) {
-        console.log(readings);
         $(".readings #cpm").text(readings.cpm);
         $(".readings #radiation-level").text(readings.uSvh);
       });
