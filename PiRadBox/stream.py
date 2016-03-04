@@ -7,7 +7,6 @@ try:
 except ImportError:
     import Queue as queue
 import eventlet
-eventlet.monkey_patch(all=False, thread=True)
 
 radiationWatch = RadiationWatch(24, 23).setup()
 # We need to close properly this resource at the appplication tear down.
@@ -30,20 +29,18 @@ def onRadiation():
     # to transfer the signal from the interrupt thread
     # to the main thread.
     # TODO Or use a Python socketio client to communicate with this server.
-    print('Ray')
     q.put_nowait(None)
 
 def listenToQueue():
     while 1:
         try:
-            data = q.get(True, 0.1)
+            data = q.get_nowait()
             socketio.emit('ray', data)
+            print('Ray')
             # TODO Send current readings.
             # socketio.emit('ray', readings, json=True)
         except queue.Empty:
-            pass
+            eventlet.sleep(0.1)
 
-eventlet.spawn(listenToQueue)
-
+eventlet.spawn_n(listenToQueue)
 radiationWatch.registerRadiationCallback(onRadiation)
-
