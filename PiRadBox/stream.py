@@ -16,6 +16,7 @@ q = queue.Queue()
 
 @socketio.on('connect')
 def onConnect():
+    # TODO Get current readings.
     print('Client connected')
     emit('readings', {
         'cpm': None,
@@ -38,7 +39,7 @@ def listenToQueue():
             data = q.get_nowait()
             socketio.emit('ray', data)
             print('Ray')
-            # TODO Send current readings.
+            # Send current readings.
             socketio.emit('readings',
                 radiationWatch.status(),
                 json=True)

@@ -14,7 +14,9 @@
   <link rel="icon" type="image/png" href="/static/images/favicon.png">
   <script src="/static/js/jquery.min.js"></script>
   <script type="text/javascript" src="/static/js/socket.io.min.js"></script>
-  <script src="/static/js/chartist.min.js"></script>
+  <script src="/static/js/react.min.js"></script>
+  <script src="/static/js/react-dom.min.js"></script>
+  <script src="/static/js/browser.min.js"></script>
 </head>
 <body>
   <div class="container">
@@ -23,16 +25,10 @@
         <h3>RadBox</h3>
       </div>
     </div>
-    <div class="row readings">
-      <div class="one-half column">
-        <p>CPM: <span id="cpm"></span></p>
-      </div>
-      <div class="one-half column">
-        <p>Radiation level: <span id="uSvh"></span> uSv/h</p>
-      </div>
-    </div>
+    <div id="readings"></div>
   </div>
   <script type="text/javascript" charset="utf-8">
+    "use strict";
     var police = new Audio("/static/click.wav");
     police.loop = false;
     var socket = io.connect('http://' + document.domain + ':' + location.port);
@@ -41,17 +37,45 @@
       socket.on('ray', function(message) {
         police.play();
       });
-      socket.on('readings', function(readings) {
-        if($(".readings #cpm") !== null)
-          $(".readings #cpm").text(readings.cpm);
-        else
-          $(".readings #cpm").text("-");
-        if($(".readings #uSvh") !== null)
-          $(".readings #uSvh").text(readings.uSvh);
-        else
-          $(".readings #cpm").text("-");
-      });
     });
+  </script>
+  <script type="text/babel">
+    "use strict";
+    // React try.
+    var Readings = React.createClass({
+      displayName: "Readings",
+
+      getInitialState: function() {
+        return { cpm: null, uSvh: null, uSvhError: null };
+      },
+      componentDidMount: function() {
+        socket.on('readings', this.handleData);
+      },
+      handleData: function(data) {
+        if(data.cpm === null)
+          data.cpm = '-';
+        if(data.uSvh === null)
+          data.uSvh = '-';
+        this.setState(data);
+        this.setState(data);
+      },
+      render: function() {
+        return (
+          <div className="row readings">
+            <div className="one-half column">
+              <p>CPM: <span id="cpm">{this.state.cpm}</span></p>
+            </div>
+            <div className="one-half column">
+              <p>Radiation level: <span id="uSvh">{this.state.uSvh}</span> uSv/h</p>
+            </div>
+          </div>
+        );
+      }
+    });
+    ReactDOM.render(
+      <Readings />,
+      document.getElementById('readings')
+    );
   </script>
 
   <!--
