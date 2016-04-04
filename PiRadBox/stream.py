@@ -18,8 +18,9 @@ q = queue.Queue()
 def onConnect():
     print('Client connected')
     emit('readings', {
-        'cpm': '-',
-        'uSvh': '-'
+        'cpm': None,
+        'uSvh': None,
+        'uSvhError': None
         }, json=True)
     # TODO Send Historical data.
     # emit('historical', data, json=True)
@@ -38,7 +39,9 @@ def listenToQueue():
             socketio.emit('ray', data)
             print('Ray')
             # TODO Send current readings.
-            # socketio.emit('ray', readings, json=True)
+            socketio.emit('readings',
+                radiationWatch.status(),
+                json=True)
         except queue.Empty:
             eventlet.sleep(0.1)
 

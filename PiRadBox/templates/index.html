@@ -28,7 +28,7 @@
         <p>CPM: <span id="cpm"></span></p>
       </div>
       <div class="one-half column">
-        <p>Radiation level: <span id="radiation-level"></span> uSv/h</p>
+        <p>Radiation level: <span id="uSvh"></span> uSv/h</p>
       </div>
     </div>
   </div>
@@ -39,24 +39,24 @@
     socket.on('connect', function() {
       console.log("Connected");
       socket.on('ray', function(message) {
-        console.log("Ray");
-        console.log(message);
         police.play();
       });
       socket.on('readings', function(readings) {
-        $(".readings #cpm").text(readings.cpm);
-        $(".readings #radiation-level").text(readings.uSvh);
+        if($(".readings #cpm") !== null)
+          $(".readings #cpm").text(readings.cpm);
+        else
+          $(".readings #cpm").text("-");
+        if($(".readings #uSvh") !== null)
+          $(".readings #uSvh").text(readings.uSvh);
+        else
+          $(".readings #cpm").text("-");
       });
     });
   </script>
 
   <!--
-  Next step is to enable a push notification scenario from a server, for so checkout:
-   * http://socket.io/ for the client-side;
-   * https://flask-socketio.readthedocs.org/en/latest/ for the server-side.
-  It will enable a full-Python server implementation, making things easier to
-  prototype.
   Then to plot data on browser on real-time rely on https://plot.ly/javascript/.
+  https://github.com/plotly/plotly.js
 
   For a rapid, lightweigth design prototyping: http://purecss.io/
    -->
