@@ -77,10 +77,6 @@
         document.getElementById('plot-safecast-soubeyrac'),
         readingsHistory,
         {
-          title: 'Historic',
-          xaxis: {
-          title: 'Timestamp'
-          },
           yaxis: {
           title: 'Radiation dose (uSv/h)'
           }
@@ -115,7 +111,7 @@
       render: function() {
         return (
           <div className="row readings">
-            <div className="one-half column">
+            <div className="four columns offset-by-two columns">
               <p>CPM: <span id="cpm">{this.state.cpm}</span></p>
             </div>
             <div className="one-half column">
