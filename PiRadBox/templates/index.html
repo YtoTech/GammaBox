@@ -28,11 +28,11 @@
     </div>
     <div id="readings"></div>
     <div class="row">
-      <button onclick="enableSound()">Enable sound</button>
-      <button onclick="disableSound()">Disable sound</button>
+      <div id="plot-safecast-soubeyrac" class="ten columns offset-by-one column"></div>
     </div>
-    <div class="row">
-      <div id="plot-safecast-soubeyrac"></div>
+    <div class="row u-txt-center">
+      <button id="enable-sound" class="button-primary" onclick="switchSound();" style="display: none;">Enable sound</button>
+      <button id="disable-sound" onclick="switchSound();">Disable sound</button>
     </div>
   </div>
   <script type="text/javascript" charset="utf-8">
@@ -40,41 +40,41 @@
     var police = new Audio("/static/click.wav");
     police.loop = false;
     var soundEnabled = true;
-    var readingsHistory = [];
+    var readingsHistory = [ { x: [], y: [], type: 'scatter' } ];
     var socket = io.connect('http://' + document.domain + ':' + location.port);
     socket.on('connect', function() {
-      console.log("Connected");
       socket.on('ray', function(message) {
         if (soundEnabled) {
           police.play();
         }
       });
       socket.on('history', function(message) {
-        console.log(message);
-        readingsHistory = message;
+        message.reverse().forEach(function(dataPoint) {
+          readingsHistory[0].x.push(dataPoint.timestamp.replace('T', ' ').replace('Z', ''));
+          readingsHistory[0].y.push(dataPoint.uSvh);
+        });
         doPlot();
       });
     });
-    function enableSound() {
-      soundEnabled = true;
-    }
-    function disableSound() {
-      soundEnabled = false;
+    function switchSound() {
+      // TODO Persist to browser.
+      if(soundEnabled) {
+        soundEnabled = false;
+        $("#enable-sound").show();
+        $("#disable-sound").hide();
+      } else {
+        soundEnabled = true;
+        $("#enable-sound").hide();
+        $("#disable-sound").show();
+      }
     }
     // Plot historical data.
-    var data = [ { x: [], y: [], type: 'scatter' } ];
     function doPlot() {
       // TODO To make it responsive at window resizing
       // https://plot.ly/javascript/responsive-fluid-layout/
-      var data = [ { x: [], y: [], type: 'scatter' } ];
-      console.log(readingsHistory);
-      readingsHistory.forEach(function(dataPoint) {
-        data[0].x.push(dataPoint.timestamp.replace('T', ' ').replace('Z', '')),
-        data[0].y.push(dataPoint.uSvh)
-      });
       Plotly.plot(
         document.getElementById('plot-safecast-soubeyrac'),
-        data,
+        readingsHistory,
         {
           title: 'Historic',
           xaxis: {
@@ -105,7 +105,10 @@
         if(data.uSvh === null)
           data.uSvh = '-';
         this.setState(data);
-        this.setState(data);
+        if(data.uSvh !== null) {
+          readingsHistory[0].x.push(data.timestamp.replace('T', ' ').replace('Z', ''));
+          readingsHistory[0].y.push(data.uSvh);
+        }
       },
       render: function() {
         return (
