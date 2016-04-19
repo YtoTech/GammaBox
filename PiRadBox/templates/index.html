@@ -17,6 +17,7 @@
   <script src="/static/js/react.min.js"></script>
   <script src="/static/js/react-dom.min.js"></script>
   <script src="/static/js/browser.min.js"></script>
+  <script src="/static/js/plotly.min.js"></script>
 </head>
 <body>
   <div class="container">
@@ -26,18 +27,65 @@
       </div>
     </div>
     <div id="readings"></div>
+    <div class="row">
+      <button onclick="enableSound()">Enable sound</button>
+      <button onclick="disableSound()">Disable sound</button>
+    </div>
+    <div class="row">
+      <div id="plot-safecast-soubeyrac"></div>
+    </div>
   </div>
   <script type="text/javascript" charset="utf-8">
     "use strict";
     var police = new Audio("/static/click.wav");
     police.loop = false;
+    var soundEnabled = true;
+    var readingsHistory = [];
     var socket = io.connect('http://' + document.domain + ':' + location.port);
     socket.on('connect', function() {
       console.log("Connected");
       socket.on('ray', function(message) {
-        police.play();
+        if (soundEnabled) {
+          police.play();
+        }
+      });
+      socket.on('history', function(message) {
+        console.log(message);
+        readingsHistory = message;
+        doPlot();
       });
     });
+    function enableSound() {
+      soundEnabled = true;
+    }
+    function disableSound() {
+      soundEnabled = false;
+    }
+    // Plot historical data.
+    var data = [ { x: [], y: [], type: 'scatter' } ];
+    function doPlot() {
+      // TODO To make it responsive at window resizing
+      // https://plot.ly/javascript/responsive-fluid-layout/
+      var data = [ { x: [], y: [], type: 'scatter' } ];
+      console.log(readingsHistory);
+      readingsHistory.forEach(function(dataPoint) {
+        data[0].x.push(dataPoint.timestamp.replace('T', ' ').replace('Z', '')),
+        data[0].y.push(dataPoint.uSvh)
+      });
+      Plotly.plot(
+        document.getElementById('plot-safecast-soubeyrac'),
+        data,
+        {
+          title: 'Historic',
+          xaxis: {
+          title: 'Timestamp'
+          },
+          yaxis: {
+          title: 'Radiation dose (uSv/h)'
+          }
+        }
+      );
+    }
   </script>
   <script type="text/babel">
     "use strict";

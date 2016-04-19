@@ -7,24 +7,35 @@ try:
 except ImportError:
     import Queue as queue
 import eventlet
+import datetime
 
+HISTORY_LENGTH = 500
 radiationWatch = RadiationWatch(24, 23).setup()
 # We need to close properly this resource at the appplication tear down.
 
 socketio = SocketIO(app)
 q = queue.Queue()
+history = []
 
 @socketio.on('connect')
 def onConnect():
     # TODO Get current readings.
     print('Client connected')
-    emit('readings', {
-        'cpm': None,
-        'uSvh': None,
-        'uSvhError': None
-        }, json=True)
-    # TODO Send Historical data.
-    # emit('historical', data, json=True)
+    if history:
+        emit('readings', {
+            'timestamp': history[-1]['timestamp'],
+            'cpm': history[-1]['cpm'],
+            'uSvh': history[-1]['uSvh'],
+            'uSvhError': history[-1]['uSvhError']
+            }, json=True)
+    else:
+        emit('readings', {
+            'cpm': None,
+            'uSvh': None,
+            'uSvhError': None
+            }, json=True)
+    # Send historical data.
+    emit('history', history, json=True)
 
 def onRadiation():
     # Get back to our main eventlet thread using a Queue
@@ -39,10 +50,16 @@ def listenToQueue():
             data = q.get_nowait()
             socketio.emit('ray', data)
             print('Ray')
+            readings = radiationWatch.status()
+            readings['timestamp'] = datetime.datetime.now().isoformat() + 'Z'
             # Send current readings.
             socketio.emit('readings',
-                radiationWatch.status(),
+                readings,
                 json=True)
+            # Persist historical data.
+            history.append(readings)
+            while len(history) > HISTORY_LENGTH:
+                del history[0]
         except queue.Empty:
             eventlet.sleep(0.1)
 
