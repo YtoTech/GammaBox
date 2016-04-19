@@ -49,7 +49,8 @@
         }
       });
       socket.on('history', function(message) {
-        message.reverse().forEach(function(dataPoint) {
+        console.log(message);
+        message.forEach(function(dataPoint) {
           readingsHistory[0].x.push(dataPoint.timestamp.replace('T', ' ').replace('Z', ''));
           readingsHistory[0].y.push(dataPoint.uSvh);
         });
@@ -105,9 +106,10 @@
         if(data.uSvh === null)
           data.uSvh = '-';
         this.setState(data);
-        if(data.uSvh !== null) {
+        if(data.uSvh !== null && readingsHistory[0].x.length > 0) {
           readingsHistory[0].x.push(data.timestamp.replace('T', ' ').replace('Z', ''));
           readingsHistory[0].y.push(data.uSvh);
+          Plotly.redraw(document.getElementById('plot-safecast-soubeyrac'));
         }
       },
       render: function() {
@@ -128,13 +130,6 @@
       document.getElementById('readings')
     );
   </script>
-
-  <!--
-  Then to plot data on browser on real-time rely on https://plot.ly/javascript/.
-  https://github.com/plotly/plotly.js
-
-  For a rapid, lightweigth design prototyping: http://purecss.io/
-   -->
 </body>
 </html>
 

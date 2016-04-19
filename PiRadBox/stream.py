@@ -49,7 +49,6 @@ def listenToQueue():
         try:
             data = q.get_nowait()
             socketio.emit('ray', data)
-            print('Ray')
             readings = radiationWatch.status()
             readings['timestamp'] = datetime.datetime.now().isoformat() + 'Z'
             # Send current readings.
