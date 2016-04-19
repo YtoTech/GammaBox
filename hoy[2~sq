@@ -1,104 +1,0 @@
-[1mdiff --git a/PiRadBox/static/css/skeleton.css b/PiRadBox/static/css/skeleton.css[m
-[1mindex ff08b4f..bb2f08e 100644[m
-[1m--- a/PiRadBox/static/css/skeleton.css[m
-[1m+++ b/PiRadBox/static/css/skeleton.css[m
-[36m@@ -372,6 +372,8 @@[m [mform {[m
-   float: right; }[m
- .u-pull-left {[m
-   float: left; }[m
-[32m+[m[32m.u-txt-center {[m
-[32m+[m[32m text-align: center; }[m
- [m
- [m
- /* Misc[m
-[1mdiff --git a/PiRadBox/templates/index.html b/PiRadBox/templates/index.html[m
-[1mindex 2ab08f1..acc2612 100644[m
-[1m--- a/PiRadBox/templates/index.html[m
-[1m+++ b/PiRadBox/templates/index.html[m
-[36m@@ -28,11 +28,11 @@[m
-     </div>[m
-     <div id="readings"></div>[m
-     <div class="row">[m
-[31m-      <button onclick="enableSound()">Enable sound</button>[m
-[31m-      <button onclick="disableSound()">Disable sound</button>[m
-[32m+[m[32m      <div id="plot-safecast-soubeyrac" class="ten columns offset-by-one column"></div>[m[41m[m
-     </div>[m
-[31m-    <div class="row">[m
-[31m-      <div id="plot-safecast-soubeyrac"></div>[m
-[32m+[m[32m    <div class="row u-txt-center">[m[41m[m
-[32m+[m[32m      <button id="enable-sound" class="button-primary" onclick="switchSound();" style="display: none;">Enable sound</button>[m[41m[m
-[32m+[m[32m      <button id="disable-sound" onclick="switchSound();">Disable sound</button>[m[41m[m
-     </div>[m
-   </div>[m
-   <script type="text/javascript" charset="utf-8">[m
-[36m@@ -40,41 +40,41 @@[m
-     var police = new Audio("/static/click.wav");[m
-     police.loop = false;[m
-     var soundEnabled = true;[m
-[31m-    var readingsHistory = [];[m
-[32m+[m[32m    var readingsHistory = [ { x: [], y: [], type: 'scatter' } ];[m[41m[m
-     var socket = io.connect('http://' + document.domain + ':' + location.port);[m
-     socket.on('connect', function() {[m
-[31m-      console.log("Connected");[m
-       socket.on('ray', function(message) {[m
-         if (soundEnabled) {[m
-           police.play();[m
-         }[m
-       });[m
-       socket.on('history', function(message) {[m
-[31m-        console.log(message);[m
-[31m-        readingsHistory = message;[m
-[32m+[m[32m        message.reverse().forEach(function(dataPoint) {[m[41m[m
-[32m+[m[32m          readingsHistory[0].x.push(dataPoint.timestamp.replace('T', ' ').replace('Z', ''));[m[41m[m
-[32m+[m[32m          readingsHistory[0].y.push(dataPoint.uSvh);[m[41m[m
-[32m+[m[32m        });[m[41m[m
-         doPlot();[m
-       });[m
-     });[m
-[31m-    function enableSound() {[m
-[31m-      soundEnabled = true;[m
-[31m-    }[m
-[31m-    function disableSound() {[m
-[31m-      soundEnabled = false;[m
-[32m+[m[32m    function switchSound() {[m[41m[m
-[32m+[m[32m      // TODO Persist to browser.[m[41m[m
-[32m+[m[32m      if(soundEnabled) {[m[41m[m
-[32m+[m[32m        soundEnabled = false;[m[41m[m
-[32m+[m[32m        $("#enable-sound").show();[m[41m[m
-[32m+[m[32m        $("#disable-sound").hide();[m[41m[m
-[32m+[m[32m      } else {[m[41m[m
-[32m+[m[32m        soundEnabled = true;[m[41m[m
-[32m+[m[32m        $("#enable-sound").hide();[m[41m[m
-[32m+[m[32m        $("#disable-sound").show();[m[41m[m
-[32m+[m[32m      }[m[41m[m
-     }[m
-     // Plot historical data.[m
-[31m-    var data = [ { x: [], y: [], type: 'scatter' } ];[m
-     function doPlot() {[m
-       // TODO To make it responsive at window resizing[m
-       // https://plot.ly/javascript/responsive-fluid-layout/[m
-[31m-      var data = [ { x: [], y: [], type: 'scatter' } ];[m
-[31m-      console.log(readingsHistory);[m
-[31m-      readingsHistory.forEach(function(dataPoint) {[m
-[31m-        data[0].x.push(dataPoint.timestamp.replace('T', ' ').replace('Z', '')),[m
-[31m-        data[0].y.push(dataPoint.uSvh)[m
-[31m-      });[m
-       Plotly.plot([m
-         document.getElementById('plot-safecast-soubeyrac'),[m
-[31m-        data,[m
-[32m+[m[32m        readingsHistory,[m[41m[m
-         {[m
-           title: 'Historic',[m
-           xaxis: {[m
-[36m@@ -105,7 +105,10 @@[m
-         if(data.uSvh === null)[m
-           data.uSvh = '-';[m
-         this.setState(data);[m
-[31m-        this.setState(data);[m
-[32m+[m[32m        if(data.uSvh !== null) {[m[41m[m
-[32m+[m[32m          readingsHistory[0].x.push(data.timestamp.replace('T', ' ').replace('Z', ''));[m[41m[m
-[32m+[m[32m          readingsHistory[0].y.push(data.uSvh);[m[41m[m
-[32m+[m[32m        }[m[41m[m
-       },[m
-       render: function() {[m
-         return ([m
