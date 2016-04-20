@@ -10,20 +10,19 @@
   <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
   <link rel="stylesheet" href="/static/css/normalize.css">
   <link rel="stylesheet" href="/static/css/skeleton.css">
-  <link rel="stylesheet" href="/static/css/chartist.min.css">
   <link rel="icon" type="image/png" href="/static/images/favicon.png">
   <script src="/static/js/jquery.min.js"></script>
   <script type="text/javascript" src="/static/js/socket.io.min.js"></script>
   <script src="/static/js/react.min.js"></script>
   <script src="/static/js/react-dom.min.js"></script>
-  <script src="/static/js/browser.min.js"></script>
+  <script src="/static/js/babel-core-browser.min.js"></script>
   <script src="/static/js/plotly.min.js"></script>
 </head>
 <body>
   <div class="container">
     <div class="row">
       <div>
-        <h3>RadBox</h3>
+        <h3><a href="/">RadBox</a></h3>
       </div>
     </div>
     <div id="readings"></div>
@@ -33,6 +32,11 @@
     <div class="row u-txt-center">
       <button id="enable-sound" class="button-primary" onclick="switchSound();" style="display: none;">Enable sound</button>
       <button id="disable-sound" onclick="switchSound();">Disable sound</button>
+    </div>
+    <div class="row u-txt-center">
+      <p>
+        <a href="/settings">Settings</a>
+      </p>
     </div>
   </div>
   <script type="text/javascript" charset="utf-8">
@@ -86,10 +90,8 @@
   </script>
   <script type="text/babel">
     "use strict";
-    // React try.
     var Readings = React.createClass({
       displayName: "Readings",
-
       getInitialState: function() {
         return { cpm: null, uSvh: null, uSvhError: null };
       },

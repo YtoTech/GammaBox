@@ -286,6 +286,8 @@ label > .label-body {
   display: inline-block;
   margin-left: .5rem;
   font-weight: normal; }
+form .checkbox-container {
+  margin-top: 12px; }
 
 
 /* Lists

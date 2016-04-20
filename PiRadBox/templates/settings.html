@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>RadBox Settings</title>
+  <meta name="description" content="RadBox allows to monotir background radiation level in your basement.">
+  <meta name="author" content="Yoan Tournade">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/static/css/normalize.css">
+  <link rel="stylesheet" href="/static/css/skeleton.css">
+  <link rel="icon" type="image/png" href="/static/images/favicon.png">
+  <script src="/static/js/jquery.min.js"></script>
+  <script src="/static/js/react.min.js"></script>
+  <script src="/static/js/react-dom.min.js"></script>
+  <script src="/static/js/babel-core-browser.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <div class="row">
+      <div>
+        <h3><a href="/">RadBox</a> - Settings</h3>
+      </div>
+    </div>
+    <div id="settings"></div>
+  </div>
+  <script type="text/babel">
+    "use strict";
+    var Settings = React.createClass({
+      displayName: "Settings",
+      getInitialState: function() {
+        return {
+          twitter: {
+            enabled: false, appKey: null, appSecret: null,
+            oauthToken: null, oauthTokenSecret: null },
+          safecast: { enabled: false, apiKey: null, production: false },
+          plotly: {
+            enabled: false, username: null, apiKey: null, streamingToken: null,
+            plotTitle: null },
+          radmon: { enabled: false, username: null, password: null } };
+      },
+      componentDidMount: function() {
+        // TODO Do an Ajax call to get settings configuration from server.
+        // https://facebook.github.io/react/tips/initial-ajax.html
+      },
+      handleSubmit: function(e) {
+        e.preventDefault();
+        console.log('Submit');
+        // TODO Do an Ajax call to save configuration to server.
+      },
+      handleChange: function(field, e) {
+        // TODO Is that the right way?
+        // Nop, decompose the component and handle each input separetly. (?)
+        console.log(e);
+        console.log(e.target);
+        this.setState({ field: e.target.value });
+        console.log(this.state);
+      },
+      handleChangeCheckbox: function(field, e) {
+        // TODO Is that the right way?
+        this.setState({ field: e.target.checked });
+      },
+      render: function() {
+        return (
+          <form onSubmit={this.handleSubmit}>
+            <h4>Twitter</h4>
+            <div className="row">
+              <div className="six columns">
+                <label for="twitterAppKey">App Key</label>
+                <input className="u-full-width" type="text" id="twitterAppKey" value={this.state.twitter.appKey} onChange={this.handleChange.bind(this, 'twitter.appKey')} />
+              </div>
+              <div className="six columns">
+                <label for="twitterAppSecret">App Secret</label>
+                <input className="u-full-width" type="text" id="twitterAppSecret" value={this.state.twitter.appSecret} />
+              </div>
+            </div>
+            <div className="row">
+              <div className="six columns">
+                <label for="twitterOauthToken">OAuth Token</label>
+                <input className="u-full-width" type="text" id="twitterOauthToken" value={this.state.twitter.oauthToken} />
+              </div>
+              <div className="six columns">
+                <label for="twitterOauthTokenSecret">OAuth Token Secret</label>
+                <input className="u-full-width" type="text" id="twitterOauthTokenSecret" value={this.state.twitter.oauthTokenSecret} />
+              </div>
+            </div>
+            <h4>Safecast</h4>
+            <div className="row">
+              <div className="six columns">
+                <label for="safecastApiKey">API Key</label>
+                <input className="u-full-width" type="text" id="safecastApiKey" value={this.state.safecast.apiKey} />
+              </div>
+              <label className="six columns checkbox-container">
+                <br/>
+                <input type="checkbox" checked={this.state.safecast.production} />
+                <span class="label-body">Production server</span>
+              </label>
+            </div>
+            <h4>Plotly</h4>
+            <div className="row">
+              <div className="six columns">
+                <label for="plotlyUsername">Username</label>
+                <input className="u-full-width" type="text" id="plotlyUsername" value={this.state.plotly.username} />
+              </div>
+              <div className="six columns">
+                <label for="plotlyApiKey">API Key</label>
+                <input className="u-full-width" type="text" id="plotlyApiKey" value={this.state.plotly.apiKey} />
+              </div>
+            </div>
+            <div className="row">
+              <div className="six columns">
+                <label for="plotlyStreamingToken">Streaming Token</label>
+                <input className="u-full-width" type="text" id="plotlyStreamingToken" value={this.state.plotly.streamingToken} />
+              </div>
+              <div className="six columns">
+                <label for="plotlyPlotTitle">Plot Title</label>
+                <input className="u-full-width" type="text" id="plotlyPlotTitle" value={this.state.plotly.plotTitle} />
+              </div>
+            </div>
+            <h4>Radmon</h4>
+            <div className="row">
+              <div className="six columns">
+                <label for="radmonUsername">Username</label>
+                <input className="u-full-width" type="text" id="radmonUsername" value={this.state.radmon.username} />
+              </div>
+              <div className="six columns">
+                <label for="radmonPassword">Password</label>
+                <input className="u-full-width" type="text" id="radmonPassword" value={this.state.radmon.password} />
+              </div>
+            </div>
+            <div className="u-txt-center">
+              <input className="button-primary" type="submit" value="Save settings" />
+            </div>
+          </form>
+        );
+      }
+    });
+    ReactDOM.render(
+      <Settings />,
+      document.getElementById('settings')
+    );
+  </script>
+</body>
+</html>
+
