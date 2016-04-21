@@ -1,9 +1,8 @@
 from flask import Flask, render_template, request, jsonify
+import json
 
 app = Flask(__name__)
-# TODO Persist and load settings to file.
-# TODO Create an object accessible from the app methods.
-radboxSettings = None
+RADBOX_SETTINGS_FILE = 'settings.json'
 
 @app.route("/")
 def index():
@@ -17,11 +16,11 @@ def settings():
 
 @app.route("/api/settings", methods=['GET'])
 def api_settings_get():
-    print(radboxSettings)
-    return jsonify(settings)
+    with open(RADBOX_SETTINGS_FILE, 'rb') as f:
+        return jsonify(json.load(f))
 
 @app.route("/api/settings", methods=['POST'])
 def api_settings_post():
-    print(request.get_json())
-    radboxSettings = request.get_json()
+    with open(RADBOX_SETTINGS_FILE, 'wb') as f:
+        json.dump(request.get_json(), f)
     return '', 204

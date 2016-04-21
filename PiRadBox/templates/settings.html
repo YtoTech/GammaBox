@@ -31,6 +31,7 @@
       displayName: "Settings",
       getInitialState: function() {
         return {
+          changed: false,
           twitter: {
             enabled: false, appKey: null, appSecret: null,
             oauthToken: null, oauthTokenSecret: null },
@@ -41,9 +42,9 @@
           radmon: { enabled: false, username: null, password: null } };
       },
       componentDidMount: function() {
-        this.handleToggling();
         // Do an Ajax call to get settings configuration from server.
         this.serverRequest = $.getJSON('/api/settings', function(settings) {
+          settings['changed'] = false;
           this.setState(settings);
         }.bind(this));
       },
@@ -52,9 +53,7 @@
       },
       handleSubmit: function(e) {
         e.preventDefault();
-        console.log('Submit');
-        console.log(this.state);
-        // TODO Do an Ajax call to save configuration to server.
+        // Do an Ajax call to save configuration to server.
         this.serverRequest = $.ajax({
           type: 'POST',
           url: '/api/settings',
@@ -62,35 +61,9 @@
           contentType: 'application/json',
           dataType: 'json',
           success: function() {
-            console.log('Save settings ok');
-            // TODO Give feedbacks to user.
-          }
+            this.setState({changed: false});
+          }.bind(this)
         });
-      },
-      handleToggling: function() {
-        // TODO Not the right way. Manage that in render()
-        // and let React update the view when required.
-        // http://stackoverflow.com/questions/24502898/show-or-hide-element-in-react-js
-        if(this.state.twitter.enabled) {
-          $('#twitter-settings').show();
-        } else {
-          $('#twitter-settings').hide();
-        }
-        if(this.state.safecast.enabled) {
-          $('#safecast-settings').show();
-        } else {
-          $('#safecast-settings').hide();
-        }
-        if(this.state.plotly.enabled) {
-          $('#plotly-settings').show();
-        } else {
-          $('#plotly-settings').hide();
-        }
-        if(this.state.radmon.enabled) {
-          $('#radmon-settings').show();
-        } else {
-          $('#radmon-settings').hide();
-        }
       },
       handleChange: function(field, e) {
         // Is that not a bit hacky?
@@ -102,14 +75,18 @@
         } else {
           newState[fieldKeys[0]][fieldKeys[1]] = e.target.value;
         }
+        newState['changed'] = true;
         this.setState(newState);
-        this.handleToggling();
       },
       render: function() {
+        // TODO We could make a component for each configuration part.
+        // The component will manage the Enabled/Disabled feature,
+        // then have a list of fields directly binded to the settings
+        // part attributes.
         return (
           <form onSubmit={this.handleSubmit}>
             <h4>Twitter <input type="checkbox" checked={this.state.twitter.enabled} onChange={this.handleChange.bind(this, 'twitter.enabled')} /></h4>
-            <div id="twitter-settings">
+            <div id="twitter-settings" style={this.state.twitter.enabled ? {display: 'block'} : {display: 'none'}}>
               <div className="row">
                 <div className="six columns">
                   <label htmlFor="twitterAppKey">App Key</label>
@@ -132,7 +109,7 @@
               </div>
             </div>
             <h4>Safecast <input type="checkbox" checked={this.state.safecast.enabled} onChange={this.handleChange.bind(this, 'safecast.enabled')} /></h4>
-            <div id="safecast-settings">
+            <div id="safecast-settings" style={this.state.safecast.enabled ? {display: 'block'} : {display: 'none'}}>
               <div className="row">
                 <div className="six columns">
                   <label htmlFor="safecastApiKey">API Key</label>
@@ -146,7 +123,7 @@
               </div>
             </div>
             <h4>Plotly <input type="checkbox" checked={this.state.plotly.enabled} onChange={this.handleChange.bind(this, 'plotly.enabled')} /></h4>
-            <div id="plotly-settings">
+            <div id="plotly-settings" style={this.state.plotly.enabled ? {display: 'block'} : {display: 'none'}}>
               <div className="row">
                 <div className="six columns">
                   <label htmlFor="plotlyUsername">Username</label>
@@ -169,7 +146,7 @@
               </div>
             </div>
             <h4>Radmon <input type="checkbox" checked={this.state.radmon.enabled} onChange={this.handleChange.bind(this, 'radmon.enabled')} /></h4>
-            <div id="radmon-settings">
+            <div id="radmon-settings" style={this.state.radmon.enabled ? {display: 'block'} : {display: 'none'}}>
               <div className="row">
                 <div className="six columns">
                   <label htmlFor="radmonUsername">Username</label>
@@ -182,7 +159,7 @@
               </div>
             </div>
             <div className="u-txt-center">
-              <input className="button-primary" type="submit" value="Save settings" />
+              <input className={this.state.changed ? 'button-primary' : 'button'} type="submit" value="Save settings" />
             </div>
           </form>
         );
