@@ -41,6 +41,7 @@
           radmon: { enabled: false, username: null, password: null } };
       },
       componentDidMount: function() {
+        this.handleToggling();
         // TODO Do an Ajax call to get settings configuration from server.
         // https://facebook.github.io/react/tips/initial-ajax.html
       },
@@ -49,6 +50,28 @@
         console.log('Submit');
         console.log(this.state);
         // TODO Do an Ajax call to save configuration to server.
+      },
+      handleToggling: function() {
+        if(this.state.twitter.enabled) {
+          $('#twitter-settings').show();
+        } else {
+          $('#twitter-settings').hide();
+        }
+        if(this.state.safecast.enabled) {
+          $('#safecast-settings').show();
+        } else {
+          $('#safecast-settings').hide();
+        }
+        if(this.state.plotly.enabled) {
+          $('#plotly-settings').show();
+        } else {
+          $('#plotly-settings').hide();
+        }
+        if(this.state.radmon.enabled) {
+          $('#radmon-settings').show();
+        } else {
+          $('#radmon-settings').hide();
+        }
       },
       handleChange: function(field, e) {
         // Is that not a bit hacky?
@@ -61,73 +84,82 @@
           newState[fieldKeys[0]][fieldKeys[1]] = e.target.value;
         }
         this.setState(newState);
+        this.handleToggling();
       },
       render: function() {
         return (
           <form onSubmit={this.handleSubmit}>
-            <h4>Twitter</h4>
-            <div className="row">
-              <div className="six columns">
-                <label htmlFor="twitterAppKey">App Key</label>
-                <input className="u-full-width" type="text" id="twitterAppKey" value={this.state.twitter.appKey} onChange={this.handleChange.bind(this, 'twitter.appKey')} />
+            <h4>Twitter <input type="checkbox" checked={this.state.twitter.enabled} onChange={this.handleChange.bind(this, 'twitter.enabled')} /></h4>
+            <div id="twitter-settings">
+              <div className="row">
+                <div className="six columns">
+                  <label htmlFor="twitterAppKey">App Key</label>
+                  <input className="u-full-width" type="text" id="twitterAppKey" value={this.state.twitter.appKey} onChange={this.handleChange.bind(this, 'twitter.appKey')} />
+                </div>
+                <div className="six columns">
+                  <label htmlFor="twitterAppSecret">App Secret</label>
+                  <input className="u-full-width" type="text" id="twitterAppSecret" value={this.state.twitter.appSecret} onChange={this.handleChange.bind(this, 'twitter.appSecret')} />
+                </div>
               </div>
-              <div className="six columns">
-                <label htmlFor="twitterAppSecret">App Secret</label>
-                <input className="u-full-width" type="text" id="twitterAppSecret" value={this.state.twitter.appSecret} onChange={this.handleChange.bind(this, 'twitter.appSecret')} />
-              </div>
-            </div>
-            <div className="row">
-              <div className="six columns">
-                <label htmlFor="twitterOauthToken">OAuth Token</label>
-                <input className="u-full-width" type="text" id="twitterOauthToken" value={this.state.twitter.oauthToken} onChange={this.handleChange.bind(this, 'twitter.oauthToken')} />
-              </div>
-              <div className="six columns">
-                <label htmlFor="twitterOauthTokenSecret">OAuth Token Secret</label>
-                <input className="u-full-width" type="text" id="twitterOauthTokenSecret" value={this.state.twitter.oauthTokenSecret} onChange={this.handleChange.bind(this, 'twitter.oauthTokenSecret')} />
-              </div>
-            </div>
-            <h4>Safecast</h4>
-            <div className="row">
-              <div className="six columns">
-                <label htmlFor="safecastApiKey">API Key</label>
-                <input className="u-full-width" type="text" id="safecastApiKey" value={this.state.safecast.apiKey} onChange={this.handleChange.bind(this, 'safecast.apiKey')} />
-              </div>
-              <label className="six columns checkbox-container">
-                <br/>
-                <input type="checkbox" checked={this.state.safecast.production} onChange={this.handleChange.bind(this, 'safecast.production')} />
-                <span class="label-body">Production server</span>
-              </label>
-            </div>
-            <h4>Plotly</h4>
-            <div className="row">
-              <div className="six columns">
-                <label htmlFor="plotlyUsername">Username</label>
-                <input className="u-full-width" type="text" id="plotlyUsername" value={this.state.plotly.username} onChange={this.handleChange.bind(this, 'plotly.username')} />
-              </div>
-              <div className="six columns">
-                <label htmlFor="plotlyApiKey">API Key</label>
-                <input className="u-full-width" type="text" id="plotlyApiKey" value={this.state.plotly.apiKey} onChange={this.handleChange.bind(this, 'plotly.apiKey')} />
+              <div className="row">
+                <div className="six columns">
+                  <label htmlFor="twitterOauthToken">OAuth Token</label>
+                  <input className="u-full-width" type="text" id="twitterOauthToken" value={this.state.twitter.oauthToken} onChange={this.handleChange.bind(this, 'twitter.oauthToken')} />
+                </div>
+                <div className="six columns">
+                  <label htmlFor="twitterOauthTokenSecret">OAuth Token Secret</label>
+                  <input className="u-full-width" type="text" id="twitterOauthTokenSecret" value={this.state.twitter.oauthTokenSecret} onChange={this.handleChange.bind(this, 'twitter.oauthTokenSecret')} />
+                </div>
               </div>
             </div>
-            <div className="row">
-              <div className="six columns">
-                <label htmlFor="plotlyStreamingToken">Streaming Token</label>
-                <input className="u-full-width" type="text" id="plotlyStreamingToken" value={this.state.plotly.streamingToken} onChange={this.handleChange.bind(this, 'plotly.streamingToken')} />
-              </div>
-              <div className="six columns">
-                <label htmlFor="plotlyPlotTitle">Plot Title</label>
-                <input className="u-full-width" type="text" id="plotlyPlotTitle" value={this.state.plotly.plotTitle} onChange={this.handleChange.bind(this, 'plotly.plotTitle')} />
+            <h4>Safecast <input type="checkbox" checked={this.state.safecast.enabled} onChange={this.handleChange.bind(this, 'safecast.enabled')} /></h4>
+            <div id="safecast-settings">
+              <div className="row">
+                <div className="six columns">
+                  <label htmlFor="safecastApiKey">API Key</label>
+                  <input className="u-full-width" type="text" id="safecastApiKey" value={this.state.safecast.apiKey} onChange={this.handleChange.bind(this, 'safecast.apiKey')} />
+                </div>
+                <label className="six columns checkbox-container">
+                  <br/>
+                  <input type="checkbox" checked={this.state.safecast.production} onChange={this.handleChange.bind(this, 'safecast.production')} />
+                  <span class="label-body">Production server</span>
+                </label>
               </div>
             </div>
-            <h4>Radmon</h4>
-            <div className="row">
-              <div className="six columns">
-                <label htmlFor="radmonUsername">Username</label>
-                <input className="u-full-width" type="text" id="radmonUsername" value={this.state.radmon.username} onChange={this.handleChange.bind(this, 'radmon.username')} />
+            <h4>Plotly <input type="checkbox" checked={this.state.plotly.enabled} onChange={this.handleChange.bind(this, 'plotly.enabled')} /></h4>
+            <div id="plotly-settings">
+              <div className="row">
+                <div className="six columns">
+                  <label htmlFor="plotlyUsername">Username</label>
+                  <input className="u-full-width" type="text" id="plotlyUsername" value={this.state.plotly.username} onChange={this.handleChange.bind(this, 'plotly.username')} />
+                </div>
+                <div className="six columns">
+                  <label htmlFor="plotlyApiKey">API Key</label>
+                  <input className="u-full-width" type="text" id="plotlyApiKey" value={this.state.plotly.apiKey} onChange={this.handleChange.bind(this, 'plotly.apiKey')} />
+                </div>
               </div>
-              <div className="six columns">
-                <label htmlFor="radmonPassword">Password</label>
-                <input className="u-full-width" type="text" id="radmonPassword" value={this.state.radmon.password} onChange={this.handleChange.bind(this, 'radmon.password')} />
+              <div className="row">
+                <div className="six columns">
+                  <label htmlFor="plotlyStreamingToken">Streaming Token</label>
+                  <input className="u-full-width" type="text" id="plotlyStreamingToken" value={this.state.plotly.streamingToken} onChange={this.handleChange.bind(this, 'plotly.streamingToken')} />
+                </div>
+                <div className="six columns">
+                  <label htmlFor="plotlyPlotTitle">Plot Title</label>
+                  <input className="u-full-width" type="text" id="plotlyPlotTitle" value={this.state.plotly.plotTitle} onChange={this.handleChange.bind(this, 'plotly.plotTitle')} />
+                </div>
+              </div>
+            </div>
+            <h4>Radmon <input type="checkbox" checked={this.state.radmon.enabled} onChange={this.handleChange.bind(this, 'radmon.enabled')} /></h4>
+            <div id="radmon-settings">
+              <div className="row">
+                <div className="six columns">
+                  <label htmlFor="radmonUsername">Username</label>
+                  <input className="u-full-width" type="text" id="radmonUsername" value={this.state.radmon.username} onChange={this.handleChange.bind(this, 'radmon.username')} />
+                </div>
+                <div className="six columns">
+                  <label htmlFor="radmonPassword">Password</label>
+                  <input className="u-full-width" type="text" id="radmonPassword" value={this.state.radmon.password} onChange={this.handleChange.bind(this, 'radmon.password')} />
+                </div>
               </div>
             </div>
             <div className="u-txt-center">
