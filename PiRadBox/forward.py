@@ -1,5 +1,6 @@
 import json
-import requests
+import threading
+from .forwarders import twitter, safecast
 
 class Forwarder(object):
     """Forward the Geiger Counter readings to miscellaneous external
@@ -19,4 +20,13 @@ class Forwarder(object):
 
     def dispatch(self, readings):
         print(readings)
-        pass
+        # Naive dispatching.
+        if self.configuration['twitter']['enabled']:
+            self.runForwarder(
+                twitter.forward, self.configuration['twitter'], readings)
+        if self.configuration['safecast']['enabled']:
+            self.runForwarder(
+                safecast.forward, self.configuration['safecast'], readings)
+
+    def runForwarder(self, f, configuration, readings):
+        threading.Thread(target=f, args=(configuration, readings)).start()
