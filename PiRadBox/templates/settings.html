@@ -42,14 +42,30 @@
       },
       componentDidMount: function() {
         this.handleToggling();
-        // TODO Do an Ajax call to get settings configuration from server.
-        // https://facebook.github.io/react/tips/initial-ajax.html
+        // Do an Ajax call to get settings configuration from server.
+        this.serverRequest = $.getJSON('/api/settings', function(settings) {
+          this.setState(settings);
+        }.bind(this));
+      },
+      componentWillUnmount: function() {
+        this.serverRequest.abort();
       },
       handleSubmit: function(e) {
         e.preventDefault();
         console.log('Submit');
         console.log(this.state);
         // TODO Do an Ajax call to save configuration to server.
+        this.serverRequest = $.ajax({
+          type: 'POST',
+          url: '/api/settings',
+          data: JSON.stringify(this.state),
+          contentType: 'application/json',
+          dataType: 'json',
+          success: function() {
+            console.log('Save settings ok');
+            // TODO Give feedbacks to user.
+          }
+        });
       },
       handleToggling: function() {
         if(this.state.twitter.enabled) {
