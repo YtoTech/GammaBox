@@ -1,8 +1,10 @@
 from flask import Flask, render_template, request, jsonify
 import json
+import forward
 
 app = Flask(__name__)
 RADBOX_SETTINGS_FILE = 'settings.json'
+forwarder = forward.Forwarder(RADBOX_SETTINGS_FILE)
 
 @app.route("/")
 def index():
@@ -23,4 +25,6 @@ def api_settings_get():
 def api_settings_post():
     with open(RADBOX_SETTINGS_FILE, 'wb') as f:
         json.dump(request.get_json(), f)
+    # TODO Use message passing.
+    forwarder.reloadConfiguration()
     return '', 204

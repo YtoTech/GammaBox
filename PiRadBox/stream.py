@@ -1,6 +1,15 @@
+"""Capture the Geiger counter readings and dispatch them
+to the web app frontend and the forwarder.
+Ideally we should have this in a separate program, so we can
+reliably monitore the Geiger counter. This program would then
+forward the readings using a broker (like ZeroMQ) to a backend
+service (to store and forward the messages) and a frontend
+service (to broadcast them). That way the reading part will
+be less sensitive to issues from the backend or frontend processes.
+"""
 from flask_socketio import SocketIO, emit
 from PiPocketGeiger import RadiationWatch
-from web_portal import app
+from web_portal import app, forwarder
 import time
 try:
     import queue
@@ -59,6 +68,8 @@ def listenToQueue():
             history.append(readings)
             while len(history) > HISTORY_LENGTH:
                 del history[0]
+            # Dispatch readings.
+            forwarder.dispatch(readings)
         except queue.Empty:
             eventlet.sleep(0.1)
 
