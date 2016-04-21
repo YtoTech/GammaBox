@@ -1,1 +1,0 @@
-{"twitter": {"appKey": null, "appSecret": null, "oauthTokenSecret": null, "enabled": false, "oauthToken": null}, "changed": true, "safecast": {"production": false, "apiKey": null, "enabled": false}, "plotly": {"username": null, "plotTitle": null, "apiKey": null, "enabled": false, "streamingToken": null}, "radmon": {"username": null, "password": null, "enabled": false}}
