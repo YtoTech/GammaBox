@@ -53,7 +53,6 @@
         }
       });
       socket.on('history', function(message) {
-        console.log(message);
         message.forEach(function(dataPoint) {
           readingsHistory[0].x.push(dataPoint.timestamp.replace('T', ' ').replace('Z', ''));
           readingsHistory[0].y.push(dataPoint.uSvh);
