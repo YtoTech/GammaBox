@@ -68,6 +68,9 @@
         });
       },
       handleToggling: function() {
+        // TODO Not the right way. Manage that in render()
+        // and let React update the view when required.
+        // http://stackoverflow.com/questions/24502898/show-or-hide-element-in-react-js
         if(this.state.twitter.enabled) {
           $('#twitter-settings').show();
         } else {
