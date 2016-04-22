@@ -19,14 +19,11 @@ class Forwarder(object):
             self.configuration = json.load(f)
 
     def dispatch(self, readings):
-        print(readings)
         # Naive dispatching.
         if self.configuration['twitter']['enabled']:
-            self.runForwarder(
-                twitter.forward, self.configuration['twitter'], readings)
+            self.runForwarder(twitter.forward, self.configuration, readings)
         if self.configuration['safecast']['enabled']:
-            self.runForwarder(
-                safecast.forward, self.configuration['safecast'], readings)
+            self.runForwarder(safecast.forward, self.configuration, readings)
 
     def runForwarder(self, f, configuration, readings):
         threading.Thread(target=f, args=(configuration, readings)).start()

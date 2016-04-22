@@ -32,6 +32,8 @@
       getInitialState: function() {
         return {
           changed: false,
+          location: {
+            name: null, latitude: null, longitude: null, height: null },
           twitter: {
             enabled: false, appKey: null, appSecret: null,
             oauthToken: null, oauthTokenSecret: null },
@@ -83,8 +85,31 @@
         // The component will manage the Enabled/Disabled feature,
         // then have a list of fields directly binded to the settings
         // part attributes.
+        // TODO Use Google Map to set location?
         return (
           <form onSubmit={this.handleSubmit}>
+            <h4>Location</h4>
+            <p>Configure the RadBox location as precisely as possible.</p>
+            <div className="row">
+              <div className="six columns">
+                <label htmlFor="locationName">Name</label>
+                <input className="u-full-width" type="text" id="locationName" value={this.state.location.name} onChange={this.handleChange.bind(this, 'location.name')} />
+              </div>
+              <div className="six columns">
+                <label htmlFor="locationHeight">Height (in meters)</label>
+                <input className="u-full-width" type="text" id="locationHeight" value={this.state.location.height} onChange={this.handleChange.bind(this, 'location.height')} />
+              </div>
+            </div>
+            <div className="row">
+              <div className="six columns">
+                <label htmlFor="locationLatitude">Latitude</label>
+                <input className="u-full-width" type="text" id="locationLatitude" value={this.state.location.latitude} onChange={this.handleChange.bind(this, 'location.latitude')} />
+              </div>
+              <div className="six columns">
+                <label htmlFor="locationLongitude">Longitude</label>
+                <input className="u-full-width" type="text" id="locationLongitude" value={this.state.location.longitude} onChange={this.handleChange.bind(this, 'location.longitude')} />
+              </div>
+            </div>
             <h4>Twitter <input type="checkbox" checked={this.state.twitter.enabled} onChange={this.handleChange.bind(this, 'twitter.enabled')} /></h4>
             <div id="twitter-settings" style={this.state.twitter.enabled ? {display: 'block'} : {display: 'none'}}>
               <div className="row">

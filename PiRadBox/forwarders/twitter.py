@@ -2,6 +2,7 @@ from twython import Twython
 
 def forward(configuration, readings):
     print("Twitting... {0}.".format(readings))
+    configuration = configuration['twitter']
     twitter = Twython(configuration['appKey'], configuration['appSecret'],
     	configuration['oauthToken'], configuration['oauthTokenSecret'])
     twitter.update_status(
