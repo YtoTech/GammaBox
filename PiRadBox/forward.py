@@ -1,5 +1,6 @@
 import json
 import threading
+import datetime
 from .forwarders import twitter, safecast
 
 class Forwarder(object):
@@ -12,13 +13,23 @@ class Forwarder(object):
     def __init__(self, configurationFileName):
         self.configurationFileName = configurationFileName
         self.configuration = None
+        self.nextPublicationAt = datetime.datetime.now()
         self.reloadConfiguration()
 
     def reloadConfiguration(self):
         with open(self.configurationFileName, 'rb') as f:
             self.configuration = json.load(f)
+        self.nextPublicationAt = datetime.datetime.now()
 
     def dispatch(self, readings):
+        # Do the time have elapsed since last publication?
+        if datetime.datetime.now() > self.nextPublicationAt:
+            self.doDispatch(readings)
+            self.nextPublicationAt = datetime.datetime.now() \
+                + datetime.timedelta(
+                    minutes=int(self.configuration['publication']['period']))
+
+    def doDispatch(self, readings):
         # Naive dispatching.
         if self.configuration['twitter']['enabled']:
             self.runForwarder(twitter.forward, self.configuration, readings)

@@ -32,6 +32,8 @@
       getInitialState: function() {
         return {
           changed: false,
+          publication: {
+            period: 15 },
           location: {
             name: null, latitude: null, longitude: null, height: null },
           twitter: {
@@ -88,16 +90,24 @@
         // TODO Use Google Map to set location?
         return (
           <form onSubmit={this.handleSubmit}>
+            <h3>Publication</h3>
+            <p>Configure the RadBox for publishing readings to external services.</p>
+            <div className="row">
+              <div className="six columns">
+                <label htmlFor="publicationPeriod">Period (in minutes)</label>
+                <input className="u-full-width" type="number" id="publicationPeriod" value={this.state.publication.period} onChange={this.handleChange.bind(this, 'publication.period')} />
+              </div>
+            </div>
             <h4>Location</h4>
             <p>Configure the RadBox location as precisely as possible.</p>
             <div className="row">
               <div className="six columns">
-                <label htmlFor="locationName">Name</label>
+                <label htmlFor="locationName">Place name</label>
                 <input className="u-full-width" type="text" id="locationName" value={this.state.location.name} onChange={this.handleChange.bind(this, 'location.name')} />
               </div>
               <div className="six columns">
                 <label htmlFor="locationHeight">Height (in meters)</label>
-                <input className="u-full-width" type="text" id="locationHeight" value={this.state.location.height} onChange={this.handleChange.bind(this, 'location.height')} />
+                <input className="u-full-width" type="number" id="locationHeight" step="0.01" value={this.state.location.height} onChange={this.handleChange.bind(this, 'location.height')} />
               </div>
             </div>
             <div className="row">
