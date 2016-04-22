@@ -1,5 +1,4 @@
 import SafecastPy
-import datetime
 
 def forward(configuration, readings):
     print("Safecasting... {0}.".format(readings))
@@ -21,7 +20,7 @@ def forward(configuration, readings):
         'longitude': configuration['location']['longitude'],
         'value': readings['uSvh'],
         'unit': SafecastPy.UNIT_USV,
-        'captured_at': datetime.datetime.utcnow().isoformat() + '+00:00',
+        'captured_at': readings['timestamp'],
         'device_id': device_id,
     }
     if configuration['location']['name']:

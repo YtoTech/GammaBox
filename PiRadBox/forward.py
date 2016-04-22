@@ -1,7 +1,7 @@
 import json
 import threading
 import datetime
-from .forwarders import twitter, safecast
+from .forwarders import twitter, safecast, plotlyf, radmon
 
 class Forwarder(object):
     """Forward the Geiger Counter readings to miscellaneous external
@@ -35,6 +35,10 @@ class Forwarder(object):
             self.runForwarder(twitter.forward, self.configuration, readings)
         if self.configuration['safecast']['enabled']:
             self.runForwarder(safecast.forward, self.configuration, readings)
+        if self.configuration['plotly']['enabled']:
+            self.runForwarder(plotlyf.forward, self.configuration, readings)
+        if self.configuration['radmon']['enabled']:
+            self.runForwarder(radmon.forward, self.configuration, readings)
 
     def runForwarder(self, f, configuration, readings):
         threading.Thread(target=f, args=(configuration, readings)).start()
