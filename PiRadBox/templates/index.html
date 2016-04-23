@@ -71,6 +71,10 @@
         $("#enable-sound").hide();
         $("#disable-sound").show();
       }
+      localStorage.setItem('soundEnabled', soundEnabled);
+    }
+    if(localStorage.getItem('soundEnabled') === 'false') {
+    	switchSound();
     }
     // Plot historical data.
     function doPlot() {
