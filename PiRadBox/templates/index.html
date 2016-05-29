@@ -61,7 +61,6 @@
       });
     });
     function switchSound() {
-      // TODO Persist to browser.
       if(soundEnabled) {
         soundEnabled = false;
         $("#enable-sound").show();
@@ -74,7 +73,7 @@
       localStorage.setItem('soundEnabled', soundEnabled);
     }
     if(localStorage.getItem('soundEnabled') === 'false') {
-    	switchSound();
+        switchSound();
     }
     // Plot historical data.
     function doPlot() {
@@ -93,6 +92,40 @@
   </script>
   <script type="text/babel">
     "use strict";
+    var uSvhColorMapping = function(value) {
+        // Stolen from Safecast Map scale.
+        value = parseFloat(value);
+        var color = null;
+        if(value < 0.03)
+            color = '#07060a';
+        if(value > 0.03 && value < 0.05)
+            color = '#190f51';
+        if(value > 0.05 && value < 0.08)
+            color = '#180dbb';
+        if(value > 0.08 && value < 0.12)
+            color = '#304eff';
+        if(value > 0.12 && value < 0.16)
+            color = '#36bcff';
+        if(value > 0.16 && value < 0.23)
+            color = '#4bedff';
+        if(value > 0.23 && value < 0.31)
+            color = '#c094ff';
+        if(value > 0.31 && value < 0.43)
+            color = '#fa24ff';
+        if(value > 0.43 && value < 0.60)
+            color = '#ff038b';
+        if(value > 0.60 && value < 0.87)
+            color = '#ff0336';
+        if(value > 0.87 && value < 1.31)
+            color = '#ff5c03';
+        if(value > 1.31 && value < 2.13)
+            color = '#ffc503';
+        if(value > 2.13 && value < 3.99)
+            color = '#ffff1c';
+        if(value > 10.09)
+            color = '#ffff93';
+        return color;
+    };
     var Readings = React.createClass({
       displayName: "Readings",
       getInitialState: function() {
@@ -114,13 +147,16 @@
         }
       },
       render: function() {
+        var uSvhStyle = {
+            color: uSvhColorMapping(this.state.uSvh)
+        };
         return (
           <div className="row readings">
             <div className="four columns offset-by-two columns">
               <p>CPM: <span id="cpm">{this.state.cpm}</span></p>
             </div>
             <div className="one-half column">
-              <p>Radiation level: <span id="uSvh">{this.state.uSvh}</span> uSv/h</p>
+              <p>Radiation level: <span style={uSvhStyle}><span id="uSvh">{this.state.uSvh}</span> uSv/h</span></p>
             </div>
           </div>
         );
