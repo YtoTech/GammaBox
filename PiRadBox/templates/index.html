@@ -44,7 +44,9 @@
     var police = new Audio("/static/click.wav");
     police.loop = false;
     var soundEnabled = true;
-    var readingsHistory = [ { x: [], y: [], type: 'scatter' } ];
+    var readingsHistory = [ { x: [], y: [], type: 'scatter', marker: {
+        color: []
+    }, mode: 'markers' } ];
     var socket = io.connect('http://' + document.domain + ':' + location.port);
     socket.on('connect', function() {
       socket.on('ray', function(message) {
@@ -56,6 +58,7 @@
         message.forEach(function(dataPoint) {
           readingsHistory[0].x.push(dataPoint.timestamp.replace('T', ' ').replace('Z', ''));
           readingsHistory[0].y.push(dataPoint.uSvh);
+          readingsHistory[0].marker.color.push('#23b7e5');
         });
         doPlot();
       });
@@ -143,6 +146,7 @@
         if(data.uSvh !== null && readingsHistory[0].x.length > 0) {
           readingsHistory[0].x.push(data.timestamp.replace('T', ' ').replace('Z', ''));
           readingsHistory[0].y.push(data.uSvh);
+          readingsHistory[0].marker.color.push('#23b7e5');
           Plotly.redraw(document.getElementById('plot-safecast-soubeyrac'));
         }
       },
