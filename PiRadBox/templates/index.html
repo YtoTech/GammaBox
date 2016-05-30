@@ -41,12 +41,46 @@
   </div>
   <script type="text/javascript" charset="utf-8">
     "use strict";
+    var uSvhColorMapping = function(value) {
+        // Stolen from Safecast Map scale.
+        value = parseFloat(value);
+        if(!value)
+            return null;
+        if(value < 0.03)
+            return'#07060a';
+        if(value < 0.05)
+            return '#190f51';
+        if(value < 0.08)
+            return '#180dbb';
+        if(value < 0.12)
+            return '#304eff';
+        if(value < 0.16)
+            return '#36bcff';
+        if(value < 0.23)
+            return '#4bedff';
+        if(value < 0.31)
+            return '#c094ff';
+        if(value < 0.43)
+            return '#fa24ff';
+        if(value < 0.60)
+            return '#ff038b';
+        if(value < 0.87)
+            return '#ff0336';
+        if(value < 1.31)
+            return '#ff5c03';
+        if(value < 2.13)
+            return '#ffc503';
+        if(value < 3.99)
+            return '#ffff1c';
+        if(value > 10.09)
+            return '#ffff93';
+    };
     var police = new Audio("/static/click.wav");
     police.loop = false;
     var soundEnabled = true;
     var readingsHistory = [ { x: [], y: [], type: 'scatter', marker: {
-        color: []
-    }, mode: 'markers' } ];
+        size: 5, color: [], line: { color: [], colorscale: [[0, 'rgb(0,0,255)'], [1, 'rgb(255,0,0)']] }, colorbar: { title: 'uSv/h'}
+    }, mode: 'lines+markers' } ];
     var socket = io.connect('http://' + document.domain + ':' + location.port);
     socket.on('connect', function() {
       socket.on('ray', function(message) {
@@ -58,7 +92,7 @@
         message.forEach(function(dataPoint) {
           readingsHistory[0].x.push(dataPoint.timestamp.replace('T', ' ').replace('Z', ''));
           readingsHistory[0].y.push(dataPoint.uSvh);
-          readingsHistory[0].marker.color.push('#23b7e5');
+          readingsHistory[0].marker.color.push(uSvhColorMapping(dataPoint.uSvh));
         });
         doPlot();
       });
@@ -91,44 +125,11 @@
           }
         }
       );
+      Plotly.redraw(document.getElementById('plot-safecast-soubeyrac'));
     }
   </script>
   <script type="text/babel">
     "use strict";
-    var uSvhColorMapping = function(value) {
-        // Stolen from Safecast Map scale.
-        value = parseFloat(value);
-        var color = null;
-        if(value < 0.03)
-            color = '#07060a';
-        if(value > 0.03 && value < 0.05)
-            color = '#190f51';
-        if(value > 0.05 && value < 0.08)
-            color = '#180dbb';
-        if(value > 0.08 && value < 0.12)
-            color = '#304eff';
-        if(value > 0.12 && value < 0.16)
-            color = '#36bcff';
-        if(value > 0.16 && value < 0.23)
-            color = '#4bedff';
-        if(value > 0.23 && value < 0.31)
-            color = '#c094ff';
-        if(value > 0.31 && value < 0.43)
-            color = '#fa24ff';
-        if(value > 0.43 && value < 0.60)
-            color = '#ff038b';
-        if(value > 0.60 && value < 0.87)
-            color = '#ff0336';
-        if(value > 0.87 && value < 1.31)
-            color = '#ff5c03';
-        if(value > 1.31 && value < 2.13)
-            color = '#ffc503';
-        if(value > 2.13 && value < 3.99)
-            color = '#ffff1c';
-        if(value > 10.09)
-            color = '#ffff93';
-        return color;
-    };
     var Readings = React.createClass({
       displayName: "Readings",
       getInitialState: function() {
@@ -146,7 +147,7 @@
         if(data.uSvh !== null && readingsHistory[0].x.length > 0) {
           readingsHistory[0].x.push(data.timestamp.replace('T', ' ').replace('Z', ''));
           readingsHistory[0].y.push(data.uSvh);
-          readingsHistory[0].marker.color.push('#23b7e5');
+          readingsHistory[0].marker.color.push(uSvhColorMapping(data.uSvh));
           Plotly.redraw(document.getElementById('plot-safecast-soubeyrac'));
         }
       },
