@@ -43,6 +43,7 @@
           plotly: {
             enabled: false, username: null, apiKey: null, streamingToken: null,
             plotTitle: null },
+          zapier: { enabled: false, webhookUrl: null },
           radmon: { enabled: false, username: null, password: null } };
       },
       componentDidMount: function() {
@@ -190,6 +191,16 @@
                 <div className="six columns">
                   <label htmlFor="radmonPassword">Password</label>
                   <input className="u-full-width" type="text" id="radmonPassword" value={this.state.radmon.password} onChange={this.handleChange.bind(this, 'radmon.password')} />
+                </div>
+              </div>
+            </div>
+            <h4>Zapier <input type="checkbox" checked={this.state.zapier.enabled} onChange={this.handleChange.bind(this, 'zapier.enabled')} /></h4>
+            <p>Access thousands of integrations with <a target="_blank" href="https://zapier.com/">Zapier</a>.</p>
+            <div id="zapier-settings" style={this.state.zapier.enabled ? {display: 'block'} : {display: 'none'}}>
+              <div className="row">
+                <div className="six columns">
+                  <label htmlFor="zapierWebhookUrl">Webhook URL</label>
+                  <input className="u-full-width" type="text" id="zapierWebhookUrl" value={this.state.zapier.webhookUrl} onChange={this.handleChange.bind(this, 'zapier.webhookUrl')} />
                 </div>
               </div>
             </div>

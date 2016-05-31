@@ -10,4 +10,4 @@ start:
 	/usr/bin/python app.py > log.txt 2>&1 & echo $$! > run.pid
 
 stop:
-	kill -2 ${PID}
+	kill ${PID}
