@@ -145,12 +145,14 @@
           data.uSvh = '-';
         this.setState(data);
         if(data.uSvh !== null && readingsHistory[0].x.length > 0) {
-          readingsHistory[0].x.splice(0, 1);
           readingsHistory[0].x.push(data.timestamp.replace('T', ' ').replace('Z', ''));
-          readingsHistory[0].y.splice(0, 1);
           readingsHistory[0].y.push(data.uSvh);
-          readingsHistory[0].marker.color.splice(0, 1);
           readingsHistory[0].marker.color.push(uSvhColorMapping(data.uSvh));
+          if (readingsHistory[0].x.length > 500) {
+            readingsHistory[0].x.splice(0, 1);
+            readingsHistory[0].y.splice(0, 1);
+            readingsHistory[0].marker.color.splice(0, 1);
+          }
           Plotly.redraw(document.getElementById('plot-safecast-soubeyrac'));
         }
       },
