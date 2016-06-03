@@ -15,6 +15,8 @@ def forward(configuration, readings):
         'value': readings['cpm'],
         'unit': 'CPM'
     }
+    print(datetime.datetime.strptime(readings['timestamp'], "%Y-%m-%dT%H:%M:%S.%fZ"))
+    print(payload)
     r = requests.get('http://www.radmon.org/radmon.php', params=payload,
         headers={ 'User-Agent': 'RadBox 0.1' })
     if r.status_code != 200 or 'incorrect login' in r.text.lower():
