@@ -22,8 +22,8 @@ class Forwarder(object):
         self.nextPublicationAt = datetime.datetime.now()
 
     def dispatch(self, readings):
-    	# Prevent to publish zeros.
-    	if readings['uSvh'] <= 0:
+    	# Prevent to publish zeros and not stabilized data.
+    	if readings['uSvh'] <= 0 or readings['duration'] < 120:
     		return
         # TODO Do something to choose when to dispatch following the integration.
         if self.configuration['zapier']['enabled']:
