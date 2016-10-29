@@ -10,6 +10,6 @@ Technically RadBox is a box currently composed of a [Raspberry Pi 2](https://www
 
 ![](/misc/RadBox3.PNG?raw=true "RadBox main page")
 
-See more on htts://radbox.ytotech.com.
+See more on https://radbox.ytotech.com.
 
 [Yoan](mailto:yoan@ytotech.com)
