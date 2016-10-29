@@ -6,8 +6,8 @@ def forward(configuration, readings):
     print("Gamma API forwarding... {0}.".format(readings))
     r = requests.post('https://gamma.ytotech.com/api/v1/events', json={
         'position': {
-            'latitude': configuration['location']['latitude'],
-            'longitude': configuration['location']['longitude']
+            'latitude': float(configuration['location']['latitude']),
+            'longitude': float(configuration['location']['longitude'])
         },
         'type': 'gamma',
         'timestamp': readings['timestamp']
