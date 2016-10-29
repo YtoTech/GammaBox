@@ -1,7 +1,7 @@
 import json
 import threading
 import datetime
-from .forwarders import twitter, safecast, plotlyf, radmon, gammaapi
+from .forwarders import twitter, safecast, plotlyf, radmon, gammaapi, zapier
 
 class Forwarder(object):
     """Forward the Geiger Counter readings to miscellaneous external
@@ -22,8 +22,8 @@ class Forwarder(object):
         self.nextPublicationAt = datetime.datetime.now()
 
     def dispatch(self, readings):
-    	# Prevent to publish zeros.
-    	if readings['uSvh'] <= 0:
+    	# Prevent to publish zeros and not stabilized data.
+    	if readings['uSvh'] <= 0 or readings['duration'] < 120:
     		return
         # Do the time have elapsed since last publication?
         if datetime.datetime.now() > self.nextPublicationAt:
@@ -47,6 +47,8 @@ class Forwarder(object):
             self.runForwarder(plotlyf.forward, self.configuration, readings)
         if self.configuration['gammaapi']['enabled']:
             self.runForwarder(gammaapi.forward, self.configuration, readings)
+        if self.configuration['zapier']['enabled']:
+            self.runForwarder(zapier.forward, self.configuration, readings)
 
     def runForwarder(self, f, configuration, readings):
         threading.Thread(target=f, args=(configuration, readings)).start()
