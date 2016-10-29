@@ -1,7 +1,7 @@
 import json
 import threading
 import datetime
-from .forwarders import twitter, safecast, plotlyf, radmon
+from .forwarders import twitter, safecast, plotlyf, radmon, gammaapi
 
 class Forwarder(object):
     """Forward the Geiger Counter readings to miscellaneous external
@@ -27,21 +27,26 @@ class Forwarder(object):
     		return
         # Do the time have elapsed since last publication?
         if datetime.datetime.now() > self.nextPublicationAt:
-            self.doDispatch(readings)
+            self.doDispatch(readings, True)
             self.nextPublicationAt = datetime.datetime.now() \
                 + datetime.timedelta(
                     minutes=int(self.configuration['publication']['period']))
+        else:
+            self.doDispatch(readings, False)
 
-    def doDispatch(self, readings):
+    def doDispatch(self, readings, periodElapsed):
         # Naive dispatching.
-        if self.configuration['twitter']['enabled']:
-            self.runForwarder(twitter.forward, self.configuration, readings)
-        if self.configuration['safecast']['enabled']:
-            self.runForwarder(safecast.forward, self.configuration, readings)
+        if periodElapsed:
+            if self.configuration['twitter']['enabled']:
+                self.runForwarder(twitter.forward, self.configuration, readings)
+            if self.configuration['safecast']['enabled']:
+                self.runForwarder(safecast.forward, self.configuration, readings)
+            if self.configuration['radmon']['enabled']:
+                self.runForwarder(radmon.forward, self.configuration, readings)
         if self.configuration['plotly']['enabled']:
             self.runForwarder(plotlyf.forward, self.configuration, readings)
-        if self.configuration['radmon']['enabled']:
-            self.runForwarder(radmon.forward, self.configuration, readings)
+        if self.configuration['gammaapi']['enabled']:
+            self.runForwarder(gammaapi.forward, self.configuration, readings)
 
     def runForwarder(self, f, configuration, readings):
         threading.Thread(target=f, args=(configuration, readings)).start()

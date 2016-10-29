@@ -43,7 +43,9 @@
           plotly: {
             enabled: false, username: null, apiKey: null, streamingToken: null,
             plotTitle: null },
-          radmon: { enabled: false, username: null, password: null } };
+          radmon: { enabled: false, username: null, password: null },
+          gammaapi: { enabled: false, username: null, password: null }
+          };
       },
       componentDidMount: function() {
         // Do an Ajax call to get settings configuration from server.
@@ -155,6 +157,19 @@
                   <input type="checkbox" checked={this.state.safecast.production} onChange={this.handleChange.bind(this, 'safecast.production')} />
                   <span class="label-body">Production server</span>
                 </label>
+              </div>
+            </div>
+            <h4>YtoTech Gamma API <input type="checkbox" checked={this.state.gammaapi.enabled} onChange={this.handleChange.bind(this, 'gammaapi.enabled')} /></h4>
+            <div id="gammaapi-settings" style={this.state.gammaapi.enabled ? {display: 'block'} : {display: 'none'}}>
+              <div className="row">
+                <div className="six columns">
+                  <label htmlFor="gammaapiUsername">Username</label>
+                  <input className="u-full-width" type="text" id="gammaapiUsername" value={this.state.gammaapi.username} onChange={this.handleChange.bind(this, 'gammaapi.username')} />
+                </div>
+                <div className="six columns">
+                  <label htmlFor="gammaapiPassword">Password</label>
+                  <input className="u-full-width" type="text" id="gammaapiPassword" value={this.state.gammaapi.password} onChange={this.handleChange.bind(this, 'gammaapi.password')} />
+                </div>
               </div>
             </div>
             <h4>Plotly <input type="checkbox" checked={this.state.plotly.enabled} onChange={this.handleChange.bind(this, 'plotly.enabled')} /></h4>
