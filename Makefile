@@ -7,10 +7,10 @@ run:
 	gunicorn -k eventlet -w 1 --bind 0.0.0.0:80 app:app
 
 start_gunicorn:
-	/usr/local/bin/gunicorn -k eventlet -w 1 --bind 0.0.0.0:80 app:app > log.txt 2>&1 & echo $$! > run.pid
+	/usr/local/bin/gunicorn -k eventlet -w 1 --bind 0.0.0.0:80 app:app & echo $$! > run.pid
 
 start:
-	/usr/bin/python -u app.py > log.txt 2>&1 & echo $$! > run.pid
+	/usr/bin/python -u app.py & echo $$! > run.pid
 
 stop:
 	kill ${PID}

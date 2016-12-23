@@ -1,7 +1,8 @@
 from twython import Twython
+import logging
 
 def forward(configuration, readings):
-    print("Twitting... {0}.".format(readings))
+    logging.info("Twitting... {0}.".format(readings))
     configuration = configuration['twitter']
     twitter = Twython(configuration['appKey'], configuration['appSecret'],
     	configuration['oauthToken'], configuration['oauthTokenSecret'])
@@ -9,4 +10,4 @@ def forward(configuration, readings):
         status='My #RadBox now reads: '
         '{0} uSv/h +/- {1} -- {2} CPM'.format(
             readings['uSvh'], readings['uSvhError'], readings['cpm']))
-    print('Twitter Ok.')
+    logging.info('Twitter Ok.')

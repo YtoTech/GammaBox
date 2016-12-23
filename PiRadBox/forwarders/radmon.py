@@ -3,9 +3,10 @@
 # in a high-level fashion.
 import requests
 import datetime
+import logging
 
 def forward(configuration, readings):
-    print("Radmoning... {0}.".format(readings))
+    logging.info("Radmoning... {0}.".format(readings))
     payload = {
         'user': configuration['radmon']['username'],
         'password': configuration['radmon']['password'],
@@ -15,12 +16,12 @@ def forward(configuration, readings):
         'value': readings['cpm'],
         'unit': 'CPM'
     }
-    print(datetime.datetime.strptime(readings['timestamp'], "%Y-%m-%dT%H:%M:%S.%fZ"))
-    print(payload)
+    logging.debug(datetime.datetime.strptime(readings['timestamp'], "%Y-%m-%dT%H:%M:%S.%fZ"))
+    logging.info(payload)
     r = requests.get('http://www.radmon.org/radmon.php', params=payload,
         headers={ 'User-Agent': 'RadBox 0.1' })
     if r.status_code != 200 or 'incorrect login' in r.text.lower():
         raise RuntimeError('{0}: Bad login-password combination for radmon.org'.format(
             r.status_code))
     else:
-        print("Radmon Ok.")
+        logging.info("Radmon Ok.")

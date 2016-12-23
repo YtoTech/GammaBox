@@ -1,7 +1,8 @@
 import SafecastPy
+import logging
 
 def forward(configuration, readings):
-    print("Safecasting... {0}.".format(readings))
+    logging.info("Safecasting... {0}.".format(readings))
     if configuration['safecast']['production']:
         safecastInstance = SafecastPy.PRODUCTION_API_URL
     else:
@@ -28,5 +29,5 @@ def forward(configuration, readings):
     if configuration['location']['height']:
         payload['height'] = configuration['location']['height']
     measurement = safecast.add_measurement(json=payload)
-    print("Safecast Ok. Measurement published with id {0}".format(
+    logging.info("Safecast Ok. Measurement published with id {0}".format(
                     measurement['id']))

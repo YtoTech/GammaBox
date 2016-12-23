@@ -17,6 +17,7 @@ except ImportError:
     import Queue as queue
 import eventlet
 import datetime
+import logging
 
 HISTORY_LENGTH = 500
 radiationWatch = RadiationWatch(24, 23).setup()
@@ -29,7 +30,7 @@ history = []
 @socketio.on('connect')
 def onConnect():
     # TODO Get current readings.
-    print('Client connected')
+    logging.info('Client connected')
     if history:
         emit('readings', {
             'timestamp': history[-1]['timestamp'],
