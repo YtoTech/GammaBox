@@ -8,7 +8,7 @@ rootLogger = logging.getLogger()
 rootLogger.setLevel(logging.DEBUG)
 # Rotate logging in a file.
 rotatingFileHandler = logging.handlers.RotatingFileHandler(
-	'log.txt', mode='a', maxBytes=5000, backupCount=3)
+	'log.txt', mode='a', maxBytes=500000, backupCount=3)
 rootLogger.addHandler(logging.StreamHandler(sys.stdout))
 rootLogger.addHandler(rotatingFileHandler)
 
