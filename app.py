@@ -6,11 +6,13 @@ import logging.handlers
 # Configure logging.
 rootLogger = logging.getLogger()
 rootLogger.setLevel(logging.DEBUG)
+# We don't want a terminal handler as the process will be attached
+# to the user terminal. (So if we have a terminal handler, flood happened)
+rootLogger.removeHandler(rootLogger.handlers[0])
+# Rotate logging in a file.
 rotatingFileHandler = logging.handlers.RotatingFileHandler(
 	'log.txt', mode='a', maxBytes=5000, backupCount=3)
 rootLogger.addHandler(rotatingFileHandler)
-# We don't want a terminal handler as the process will be attached
-# to the user terminal. (So if we have a terminal handler, flood happened)
 
 if __name__ == "__main__":
     if '-d' in sys.argv or '--debug' in sys.argv:
