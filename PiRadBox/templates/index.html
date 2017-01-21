@@ -26,6 +26,11 @@
       </div>
     </div>
     <div id="readings"></div>
+    <div class="row life hal9000">
+      <div class="four columns offset-by-four columns">
+        <div id="life-circle" style="height: 100px; width: 100px;"></div>
+      </div>
+    </div>
     <div class="row">
       <div id="plot-safecast-soubeyrac" class="ten columns offset-by-one column"></div>
     </div>
@@ -41,7 +46,16 @@
   </div>
   <script type="text/javascript" charset="utf-8">
     "use strict";
-    var uSvhColorMapping = function(value) {
+    // Colors.
+    function hexToRgb(hex) {
+        var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result ? {
+            red: parseInt(result[1], 16),
+            green: parseInt(result[2], 16),
+            blue: parseInt(result[3], 16)
+        } : null;
+    }
+    const uSvhColorMapping = function(value) {
         // Stolen from Safecast Map scale.
         value = parseFloat(value);
         if(!value)
@@ -75,18 +89,74 @@
         if(value > 10.09)
             return '#ffff93';
     };
-    var police = new Audio("/static/click.wav");
+    // Life circle stuff.
+    const GRADIENT_COLOR = {
+      red: 255,
+      green: 3,
+      blue: 54
+    };
+    const GRADIENT_PARTS = [
+      {
+        position: 0,
+        alpha: 1
+      },
+      {
+        position: 60,
+        alpha: 0.9
+      },
+      {
+        position: 100,
+        alpha: 0
+      }
+    ];
+    const BASE_GRADIENT = 'radial-gradient(circle 30px at 50%';
+    const INITIAL_FACTOR = 1;
+    const DESCENT_FACTOR = 0.01;
+    const DESCENT_DELAY = 30;
+    function setLifeCircle (factor) {
+      let gradient = BASE_GRADIENT;
+      GRADIENT_PARTS.forEach(function (part) {
+        gradient += ', rgba(' + GRADIENT_COLOR.red + ', ' + GRADIENT_COLOR.green + ', ' + GRADIENT_COLOR.blue + ', ' + part.alpha * factor + ') ' + part.position + '%';
+      });
+      document.getElementById('life-circle').style['background-image'] = gradient;
+    }
+    let lifeCircleTimeout = null;
+    let lifeCircle = 0;
+    function processDescentFactor(factor) {
+      return factor - DESCENT_FACTOR;
+    }
+    function beginDescent () {
+      clearTimeout(lifeCircleTimeout);
+      lifeCircle += 1;
+      function descentFunction(delay) {
+        setLifeCircle(lifeCircle);
+        lifeCircle = processDescentFactor(lifeCircle);
+        // TODO Create an asymptotic delay descent:
+        // First milliseconds lost most of the factor power,
+        // but then keep to low values without getting to zero.
+        // Like an ease-out. Or exponential PDF.
+        if (lifeCircle > 0) {
+          lifeCircleTimeout = setTimeout(function () {
+            descentFunction(delay + DESCENT_DELAY);
+          }, DESCENT_DELAY);
+        }
+      }
+      descentFunction(DESCENT_DELAY);
+    }
+    // Sound stuff.
+    let police = new Audio("/static/click.wav");
     police.loop = false;
-    var soundEnabled = true;
-    var readingsHistory = [ { x: [], y: [], type: 'scatter', marker: {
+    let soundEnabled = true;
+    let readingsHistory = [ { x: [], y: [], type: 'scatter', marker: {
         size: 5, color: [], line: { color: [], colorscale: [[0, 'rgb(0,0,255)'], [1, 'rgb(255,0,0)']] }, colorbar: { title: 'uSv/h'}
     }, mode: 'lines+markers' } ];
-    var socket = io.connect('http://' + document.domain + ':' + location.port);
+    const socket = io.connect('http://' + document.domain + ':' + location.port);
     socket.on('connect', function() {
       socket.on('ray', function(message) {
         if (soundEnabled) {
           police.play();
         }
+        beginDescent();
       });
       socket.on('history', function(message) {
         message.forEach(function(dataPoint) {
