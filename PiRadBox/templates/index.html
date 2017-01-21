@@ -46,6 +46,8 @@
   </div>
   <script type="text/javascript" charset="utf-8">
     "use strict";
+    // Global hell.
+    let currentReading = null;
     // Colors.
     function hexToRgb(hex) {
         var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -113,10 +115,10 @@
     const INITIAL_FACTOR = 1;
     const DESCENT_FACTOR = 0.01;
     const DESCENT_DELAY = 30;
-    function setLifeCircle (factor) {
+    function setLifeCircle (color, factor) {
       let gradient = BASE_GRADIENT;
       GRADIENT_PARTS.forEach(function (part) {
-        gradient += ', rgba(' + GRADIENT_COLOR.red + ', ' + GRADIENT_COLOR.green + ', ' + GRADIENT_COLOR.blue + ', ' + part.alpha * factor + ') ' + part.position + '%';
+        gradient += ', rgba(' + color.red + ', ' + color.green + ', ' + color.blue + ', ' + part.alpha * factor + ') ' + part.position + '%';
       });
       document.getElementById('life-circle').style['background-image'] = gradient;
     }
@@ -127,9 +129,14 @@
     }
     function beginDescent () {
       clearTimeout(lifeCircleTimeout);
-      lifeCircle += 1;
+      lifeCircle += 0.8;
+      let color = GRADIENT_COLOR;
+      // Get color following current reading value.
+      if (currentReading && currentReading.uSvh) {
+        color = hexToRgb(uSvhColorMapping(currentReading.uSvh));
+      }
       function descentFunction(delay) {
-        setLifeCircle(lifeCircle);
+        setLifeCircle(color, lifeCircle);
         lifeCircle = processDescentFactor(lifeCircle);
         // TODO Create an asymptotic delay descent:
         // First milliseconds lost most of the factor power,
@@ -165,6 +172,9 @@
           readingsHistory[0].marker.color.push(uSvhColorMapping(dataPoint.uSvh));
         });
         doPlot();
+      });
+      socket.on('readings', function(data) {
+        currentReading = data;
       });
     });
     function switchSound() {
