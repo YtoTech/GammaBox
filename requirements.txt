@@ -1,4 +1,4 @@
-PiPocketGeiger>=0.1a
+PiPocketGeiger>=0.3
 Flask>=0.10.1
 Flask-SocketIO>=1.2
 gunicorn>=19.4.1
