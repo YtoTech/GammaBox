@@ -13,3 +13,10 @@ Technically RadBox is a box currently composed of a [Raspberry Pi 2](https://www
 See more on https://radbox.ytotech.com.
 
 [Yoan](mailto:yoan@ytotech.com)
+
+TODO:
+* Write a blog article
+* Design a nice logo, neutral and non-offensive, even positive (cartoon-like)
+* Create landing page for the project
+* Create a better case, put a https://www.stickermule.com/fr on it
+* Propose to sell some pre-assembled alpha-versions for enthusiasts ready to test it :)
