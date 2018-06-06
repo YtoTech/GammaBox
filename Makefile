@@ -13,7 +13,7 @@ test:
 	pipenv run pytest
 
 lint:
-	pipenv run pylint .
+	pipenv run pylint app.py gammabox
 	# TODO Add also flake8?
 
 format:

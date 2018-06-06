@@ -1,7 +1,10 @@
-from gammabox import socketio, app
+"""
+Launch the Gamma Box.
+"""
 import sys
 import logging
 import logging.handlers
+from gammabox import socketio, app
 
 # Configure logging.
 rootLogger = logging.getLogger()
