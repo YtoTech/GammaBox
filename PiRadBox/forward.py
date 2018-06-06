@@ -22,9 +22,9 @@ class Forwarder(object):
         self.nextPublicationAt = datetime.datetime.now()
 
     def dispatch(self, readings):
-    	# Prevent to publish zeros and not stabilized data.
-    	if readings['uSvh'] <= 0 or readings['duration'] < 120:
-    		return
+        # Prevent to publish zeros and not stabilized data.
+        if readings['uSvh'] <= 0 or readings['duration'] < 120:
+            return
         # Do the time have elapsed since last publication?
         if datetime.datetime.now() > self.nextPublicationAt:
             self.doDispatch(readings, True)
