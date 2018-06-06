@@ -7,6 +7,7 @@ import logging.handlers
 from gammabox import socketio, app
 
 # Configure logging.
+# pylint: disable=C0103
 rootLogger = logging.getLogger()
 rootLogger.setLevel(logging.DEBUG)
 # Rotate logging in a file.

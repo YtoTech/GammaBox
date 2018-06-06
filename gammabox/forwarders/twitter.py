@@ -1,5 +1,5 @@
-from twython import Twython
 import logging
+from twython import Twython
 
 
 def forward(configuration, readings):

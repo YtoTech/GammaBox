@@ -10,7 +10,6 @@ be less sensitive to issues from the backend or frontend processes.
 from flask_socketio import SocketIO, emit
 from PiPocketGeiger import RadiationWatch
 from .web_portal import app, forwarder
-import time
 try:
     import queue
 except ImportError:

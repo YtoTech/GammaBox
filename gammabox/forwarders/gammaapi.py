@@ -5,7 +5,7 @@ import logging
 
 
 def forward(configuration, readings):
-    logging.info("Gamma API forwarding... {0}.".format(readings))
+    logging.info("Gamma API forwarding... %s", readings)
     r = requests.post(
         'https://gamma.ytotech.com/api/v1/devices',
         json={

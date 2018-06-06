@@ -1,5 +1,4 @@
 import plotly.plotly as py
-import plotly.tools as tls
 from plotly.graph_objs import Scatter, Data, Stream, Figure, Layout
 import logging
 

@@ -1,4 +1,5 @@
-# See https://sourceforge.net/p/pyradmon-reborn/code/ci/master/tree/PyRadmon%20-%20No%20Audio/PyRadmon.py#l464
+# See https://sourceforge.net/p/pyradmon-reborn/code/ci/master/tree/
+# PyRadmon%20-%20No%20Audio/PyRadmon.py#l464
 # Create a lib specifically to wrap the Radmon "API", so we can easily publish
 # in a high-level fashion.
 import requests
