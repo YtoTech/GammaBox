@@ -27,25 +27,31 @@ socketio = SocketIO(app)
 q = queue.Queue()
 history = []
 
+
 @socketio.on('connect')
 def onConnect():
     # TODO Get current readings.
     logging.info('Client connected')
     if history:
-        emit('readings', {
-            'timestamp': history[-1]['timestamp'],
-            'cpm': history[-1]['cpm'],
-            'uSvh': history[-1]['uSvh'],
-            'uSvhError': history[-1]['uSvhError']
-            }, json=True)
+        emit(
+            'readings', {
+                'timestamp': history[-1]['timestamp'],
+                'cpm': history[-1]['cpm'],
+                'uSvh': history[-1]['uSvh'],
+                'uSvhError': history[-1]['uSvhError']
+            },
+            json=True)
     else:
-        emit('readings', {
-            'cpm': None,
-            'uSvh': None,
-            'uSvhError': None
-            }, json=True)
+        emit(
+            'readings', {
+                'cpm': None,
+                'uSvh': None,
+                'uSvhError': None
+            },
+            json=True)
     # Send historical data.
     emit('history', history, json=True)
+
 
 def onRadiation():
     # Get back to our main eventlet thread using a Queue
@@ -53,6 +59,7 @@ def onRadiation():
     # to the main thread.
     # TODO Or use a Python socketio client to communicate with this server.
     q.put_nowait(None)
+
 
 def listenToQueue():
     while 1:
@@ -62,9 +69,7 @@ def listenToQueue():
             readings = radiationWatch.status()
             readings['timestamp'] = datetime.datetime.now().isoformat() + 'Z'
             # Send current readings.
-            socketio.emit('readings',
-                readings,
-                json=True)
+            socketio.emit('readings', readings, json=True)
             # Persist historical data.
             history.append(readings)
             while len(history) > HISTORY_LENGTH:
@@ -73,6 +78,7 @@ def listenToQueue():
             forwarder.dispatch(readings)
         except queue.Empty:
             eventlet.sleep(0.1)
+
 
 eventlet.spawn_n(listenToQueue)
 radiationWatch.register_radiation_callback(onRadiation)

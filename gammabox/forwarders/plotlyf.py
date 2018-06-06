@@ -3,13 +3,14 @@ import plotly.tools as tls
 from plotly.graph_objs import Scatter, Data, Stream, Figure, Layout
 import logging
 
+
 def forward(configuration, readings):
     logging.info("Plotlying... {0}.".format(readings))
     # TODO We need a process running in continue to stream
     # to Plotly. We really do need to implement the forwarding
     # with an independant app, dispatching readings coming from a broker.
     py.sign_in(configuration['plotly']['username'],
-        configuration['plotly']['apiKey'])
+               configuration['plotly']['apiKey'])
     url = py.plot(
         Figure(
             layout=Layout(
@@ -18,10 +19,12 @@ def forward(configuration, readings):
                 yaxis=dict(title='Dose (uSv/h)')),
             data=Data([
                 Scatter(
-                    x=[], y=[],
+                    x=[],
+                    y=[],
                     mode='lines',
                     stream=Stream(
-                        token=configuration['plotly']['streamingToken']))])),
+                        token=configuration['plotly']['streamingToken']))
+            ])),
         filename=configuration['plotly']['plotTitle'])
     logging.info("Plotly graph URL: {0}".format(url))
     stream = py.Stream(configuration['plotly']['streamingToken'])

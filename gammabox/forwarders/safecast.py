@@ -1,6 +1,7 @@
 import SafecastPy
 import logging
 
+
 def forward(configuration, readings):
     logging.info("Safecasting... {0}.".format(readings))
     if configuration['safecast']['production']:
@@ -10,11 +11,12 @@ def forward(configuration, readings):
     safecast = SafecastPy.SafecastPy(
         api_key=configuration['safecast']['apiKey'], api_url=safecastInstance)
     # TODO Allows to configurate the device.
-    device_id = safecast.add_device(json={
-        'manufacturer': 'Radiation Watch',
-        'model': 'Pocket Geiger Type 5',
-        'sensor': 'FirstSensor X100-7 SMD'
-    }).get('id')
+    device_id = safecast.add_device(
+        json={
+            'manufacturer': 'Radiation Watch',
+            'model': 'Pocket Geiger Type 5',
+            'sensor': 'FirstSensor X100-7 SMD'
+        }).get('id')
     # TODO Get location from configuration.
     payload = {
         'latitude': configuration['location']['latitude'],
@@ -30,4 +32,4 @@ def forward(configuration, readings):
         payload['height'] = configuration['location']['height']
     measurement = safecast.add_measurement(json=payload)
     logging.info("Safecast Ok. Measurement published with id {0}".format(
-                    measurement['id']))
+        measurement['id']))

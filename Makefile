@@ -17,7 +17,7 @@ lint:
 	# TODO Add also flake8?
 
 format:
-	pipenv run yapf --recursive --in-place
+	pipenv run yapf --recursive --in-place .
 
 ################################################
 #              Running the app                 #

@@ -3,6 +3,7 @@ import threading
 import datetime
 from .forwarders import twitter, safecast, plotlyf, radmon, gammaapi, zapier
 
+
 class Forwarder(object):
     """Forward the Geiger Counter readings to miscellaneous external
     services.
@@ -10,6 +11,7 @@ class Forwarder(object):
     that receives the readings through a broker (like ZeroMQ) and then dispatch them
     to the several ends. Here we may have threading issues, and it may not be totally
     reliable."""
+
     def __init__(self, configurationFileName):
         self.configurationFileName = configurationFileName
         self.configuration = None
@@ -22,7 +24,8 @@ class Forwarder(object):
                 self.configuration = json.load(f)
         except Exception as e:
             # TODO Use a true logger.
-            print('Failed to load configuration file {}. Cause:'.format(self.configurationFileName))
+            print('Failed to load configuration file {}. Cause:'.format(
+                self.configurationFileName))
             print(e)
             self.configuration = None
         self.nextPublicationAt = datetime.datetime.now()
@@ -47,9 +50,11 @@ class Forwarder(object):
         # Naive dispatching.
         if periodElapsed:
             if self.configuration['twitter']['enabled']:
-                self.runForwarder(twitter.forward, self.configuration, readings)
+                self.runForwarder(twitter.forward, self.configuration,
+                                  readings)
             if self.configuration['safecast']['enabled']:
-                self.runForwarder(safecast.forward, self.configuration, readings)
+                self.runForwarder(safecast.forward, self.configuration,
+                                  readings)
             if self.configuration['radmon']['enabled']:
                 self.runForwarder(radmon.forward, self.configuration, readings)
         if self.configuration['plotly']['enabled']:
