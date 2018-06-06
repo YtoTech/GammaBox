@@ -4,6 +4,9 @@ verify_ssl = true
 name = "pypi"
 
 [dev-packages]
+pylint = "*"
+yapf = "*"
+pytest = "*"
 
 [packages]
 gunicorn = ">=19.4.1"
