@@ -10,6 +10,7 @@ be less sensitive to issues from the backend or frontend processes.
 from flask_socketio import SocketIO, emit
 from PiPocketGeiger import RadiationWatch
 from .web_portal import app, forwarder
+
 try:
     import queue
 except ImportError:
@@ -27,29 +28,25 @@ q = queue.Queue()
 history = []
 
 
-@socketio.on('connect')
+@socketio.on("connect")
 def onConnect():
     # TODO Get current readings.
-    logging.info('Client connected')
+    logging.info("Client connected")
     if history:
         emit(
-            'readings', {
-                'timestamp': history[-1]['timestamp'],
-                'cpm': history[-1]['cpm'],
-                'uSvh': history[-1]['uSvh'],
-                'uSvhError': history[-1]['uSvhError']
+            "readings",
+            {
+                "timestamp": history[-1]["timestamp"],
+                "cpm": history[-1]["cpm"],
+                "uSvh": history[-1]["uSvh"],
+                "uSvhError": history[-1]["uSvhError"],
             },
-            json=True)
+            json=True,
+        )
     else:
-        emit(
-            'readings', {
-                'cpm': None,
-                'uSvh': None,
-                'uSvhError': None
-            },
-            json=True)
+        emit("readings", {"cpm": None, "uSvh": None, "uSvhError": None}, json=True)
     # Send historical data.
-    emit('history', history, json=True)
+    emit("history", history, json=True)
 
 
 def onRadiation():
@@ -64,11 +61,11 @@ def listenToQueue():
     while 1:
         try:
             data = q.get_nowait()
-            socketio.emit('ray', data)
+            socketio.emit("ray", data)
             readings = radiationWatch.status()
-            readings['timestamp'] = datetime.datetime.now().isoformat() + 'Z'
+            readings["timestamp"] = datetime.datetime.now().isoformat() + "Z"
             # Send current readings.
-            socketio.emit('readings', readings, json=True)
+            socketio.emit("readings", readings, json=True)
             # Persist historical data.
             history.append(readings)
             while len(history) > HISTORY_LENGTH:

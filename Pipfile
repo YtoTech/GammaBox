@@ -5,9 +5,9 @@ name = "pypi"
 
 [dev-packages]
 pylint = "*"
-yapf = "*"
 pytest = "*"
 "flake8" = "*"
+black = "*"
 
 [packages]
 gunicorn = ">=19.4.1"
