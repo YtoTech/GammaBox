@@ -1,5 +1,8 @@
 PID=$(shell cat run.pid)
 
+install:
+	pipenv install
+
 debug:
 	python app.py --debug
 
