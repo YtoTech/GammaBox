@@ -17,13 +17,22 @@ class Forwarder(object):
         self.reloadConfiguration()
 
     def reloadConfiguration(self):
-        with open(self.configurationFileName, 'rb') as f:
-            self.configuration = json.load(f)
+        try:
+            with open(self.configurationFileName, 'rb') as f:
+                self.configuration = json.load(f)
+        except Exception as e:
+            # TODO Use a true logger.
+            print('Failed to load configuration file {}. Cause:'.format(self.configurationFileName))
+            print(e)
+            self.configuration = None
         self.nextPublicationAt = datetime.datetime.now()
 
     def dispatch(self, readings):
         # Prevent to publish zeros and not stabilized data.
         if readings['uSvh'] <= 0 or readings['duration'] < 120:
+            return
+        # No forwarding if configuration has not been initialized.
+        if not self.configuration:
             return
         # Do the time have elapsed since last publication?
         if datetime.datetime.now() > self.nextPublicationAt:
