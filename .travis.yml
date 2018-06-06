@@ -5,7 +5,9 @@ python:
   - "3.6"
   - "3.7-dev"
 
-install: "make install"
+install:
+  - pip install pipenv
+  - make install
 
 script:
   - make lint
