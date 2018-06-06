@@ -3,7 +3,7 @@ from twython import Twython
 
 
 def forward(configuration, readings):
-    logging.info("Twitting... {0}.".format(readings))
+    logging.info("Twitting... %s.", readings)
     configuration = configuration["twitter"]
     twitter = Twython(
         configuration["appKey"],

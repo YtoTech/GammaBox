@@ -7,29 +7,30 @@ service (to store and forward the messages) and a frontend
 service (to broadcast them). That way the reading part will
 be less sensitive to issues from the backend or frontend processes.
 """
-from flask_socketio import SocketIO, emit
-from PiPocketGeiger import RadiationWatch
-from .web_portal import app, forwarder
-
 try:
     import queue
 except ImportError:
     import Queue as queue
-import eventlet
-import datetime
 import logging
+import datetime
+import eventlet
+from flask_socketio import SocketIO, emit
+from PiPocketGeiger import RadiationWatch
+from .web_portal import app, forwarder
+
 
 HISTORY_LENGTH = 500
-radiationWatch = RadiationWatch(24, 23).setup()
+# pylint: disable=C0103
+radiation_watch = RadiationWatch(24, 23).setup()
 # We need to close properly this resource at the appplication tear down.
 
 socketio = SocketIO(app)
-q = queue.Queue()
+gamma_queue = queue.Queue()
 history = []
 
 
 @socketio.on("connect")
-def onConnect():
+def on_connect():
     # TODO Get current readings.
     logging.info("Client connected")
     if history:
@@ -49,20 +50,20 @@ def onConnect():
     emit("history", history, json=True)
 
 
-def onRadiation():
+def on_radiation():
     # Get back to our main eventlet thread using a Queue
     # to transfer the signal from the interrupt thread
     # to the main thread.
     # TODO Or use a Python socketio client to communicate with this server.
-    q.put_nowait(None)
+    gamma_queue.put_nowait(None)
 
 
-def listenToQueue():
+def listen_to_queue():
     while 1:
         try:
-            data = q.get_nowait()
+            data = gamma_queue.get_nowait()
             socketio.emit("ray", data)
-            readings = radiationWatch.status()
+            readings = radiation_watch.status()
             readings["timestamp"] = datetime.datetime.now().isoformat() + "Z"
             # Send current readings.
             socketio.emit("readings", readings, json=True)
@@ -76,7 +77,7 @@ def listenToQueue():
             eventlet.sleep(0.1)
 
 
-eventlet.spawn_n(listenToQueue)
-radiationWatch.register_radiation_callback(onRadiation)
+eventlet.spawn_n(listen_to_queue)
+radiation_watch.register_radiation_callback(on_radiation)
 # TODO Also register noise an **dring** when noise present.
 # (Show a message + some recommendation for noise prevention)

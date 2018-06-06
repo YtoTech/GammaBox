@@ -2,13 +2,13 @@
 # PyRadmon%20-%20No%20Audio/PyRadmon.py#l464
 # Create a lib specifically to wrap the Radmon "API", so we can easily publish
 # in a high-level fashion.
-import requests
 import datetime
 import logging
+import requests
 
 
 def forward(configuration, readings):
-    logging.info("Radmoning... {0}.".format(readings))
+    logging.info("Radmoning... %s.", readings)
     payload = {
         "user": configuration["radmon"]["username"],
         "password": configuration["radmon"]["password"],
@@ -23,14 +23,16 @@ def forward(configuration, readings):
         datetime.datetime.strptime(readings["timestamp"], "%Y-%m-%dT%H:%M:%S.%fZ")
     )
     logging.info(payload)
-    r = requests.get(
+    request = requests.get(
         "http://www.radmon.org/radmon.php",
         params=payload,
         headers={"User-Agent": "RadBox 0.1"},
     )
-    if r.status_code != 200 or "incorrect login" in r.text.lower():
+    if request.status_code != 200 or "incorrect login" in request.text.lower():
         raise RuntimeError(
-            "{0}: Bad login-password combination for radmon.org".format(r.status_code)
+            "{0}: Bad login-password combination for radmon.org".format(
+                request.status_code
+            )
         )
     else:
         logging.info("Radmon Ok.")

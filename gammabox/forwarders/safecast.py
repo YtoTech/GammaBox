@@ -1,15 +1,15 @@
-import SafecastPy
 import logging
+import SafecastPy
 
 
 def forward(configuration, readings):
-    logging.info("Safecasting... {0}.".format(readings))
+    logging.info("Safecasting... %s.", readings)
     if configuration["safecast"]["production"]:
-        safecastInstance = SafecastPy.PRODUCTION_API_URL
+        safecast_instance = SafecastPy.PRODUCTION_API_URL
     else:
-        safecastInstance = SafecastPy.DEVELOPMENT_API_URL
+        safecast_instance = SafecastPy.DEVELOPMENT_API_URL
     safecast = SafecastPy.SafecastPy(
-        api_key=configuration["safecast"]["apiKey"], api_url=safecastInstance
+        api_key=configuration["safecast"]["apiKey"], api_url=safecast_instance
     )
     # TODO Allows to configurate the device.
     device_id = safecast.add_device(
@@ -33,6 +33,4 @@ def forward(configuration, readings):
     if configuration["location"]["height"]:
         payload["height"] = configuration["location"]["height"]
     measurement = safecast.add_measurement(json=payload)
-    logging.info(
-        "Safecast Ok. Measurement published with id {0}".format(measurement["id"])
-    )
+    logging.info("Safecast Ok. Measurement published with id %s", measurement["id"])

@@ -16,7 +16,7 @@ test:
 	pipenv run pytest
 
 lint:
-	pipenv run flake8 app.py gammabox
+	pipenv run flake8 --ignore=E501 app.py gammabox
 	pipenv run pylint app.py gammabox
 
 format:

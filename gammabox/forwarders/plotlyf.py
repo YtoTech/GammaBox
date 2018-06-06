@@ -1,10 +1,10 @@
+import logging
 import plotly.plotly as py
 from plotly.graph_objs import Scatter, Data, Stream, Figure, Layout
-import logging
 
 
 def forward(configuration, readings):
-    logging.info("Plotlying... {0}.".format(readings))
+    logging.info("Plotlying... %s.", readings)
     # TODO We need a process running in continue to stream
     # to Plotly. We really do need to implement the forwarding
     # with an independant app, dispatching readings coming from a broker.
@@ -29,7 +29,7 @@ def forward(configuration, readings):
         ),
         filename=configuration["plotly"]["plotTitle"],
     )
-    logging.info("Plotly graph URL: {0}".format(url))
+    logging.info("Plotly graph URL: %s", url)
     stream = py.Stream(configuration["plotly"]["streamingToken"])
     stream.open()
     stream.write(dict(x=readings["timestamp"], y=readings["uSvh"]))

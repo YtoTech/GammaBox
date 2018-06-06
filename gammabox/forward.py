@@ -4,6 +4,10 @@ import datetime
 from .forwarders import twitter, safecast, plotlyf, radmon, gammaapi, zapier
 
 
+def run_forwarder(forwader, configuration, readings):
+    threading.Thread(target=forwader, args=(configuration, readings)).start()
+
+
 class Forwarder(object):
     """Forward the Geiger Counter readings to miscellaneous external services.
     In a better world, this should be an independant application
@@ -12,26 +16,26 @@ class Forwarder(object):
     Here we may have threading issues, and it may not be totally
     reliable."""
 
-    def __init__(self, configurationFileName):
-        self.configurationFileName = configurationFileName
+    def __init__(self, configuration_file_path):
+        self.configuration_file_path = configuration_file_path
         self.configuration = None
-        self.nextPublicationAt = datetime.datetime.now()
-        self.reloadConfiguration()
+        self.next_publication_at = datetime.datetime.now()
+        self.reload_configuration()
 
-    def reloadConfiguration(self):
+    def reload_configuration(self):
         try:
-            with open(self.configurationFileName, "rb") as f:
-                self.configuration = json.load(f)
-        except Exception as e:
+            with open(self.configuration_file_path, "rb") as file:
+                self.configuration = json.load(file)
+        except Exception as exc:  # pylint: disable=broad-except
             # TODO Use a true logger.
             print(
                 "Failed to load configuration file {}. Cause:".format(
-                    self.configurationFileName
+                    self.configuration_file_path
                 )
             )
-            print(e)
+            print(exc)
             self.configuration = None
-        self.nextPublicationAt = datetime.datetime.now()
+        self.next_publication_at = datetime.datetime.now()
 
     def dispatch(self, readings):
         # Prevent to publish zeros and not stabilized data.
@@ -41,29 +45,26 @@ class Forwarder(object):
         if not self.configuration:
             return
         # Do the time have elapsed since last publication?
-        if datetime.datetime.now() > self.nextPublicationAt:
-            self.doDispatch(readings, True)
-            self.nextPublicationAt = datetime.datetime.now() + datetime.timedelta(
+        if datetime.datetime.now() > self.next_publication_at:
+            self.do_dispatch(readings, True)
+            self.next_publication_at = datetime.datetime.now() + datetime.timedelta(
                 minutes=int(self.configuration["publication"]["period"])
             )
         else:
-            self.doDispatch(readings, False)
+            self.do_dispatch(readings, False)
 
-    def doDispatch(self, readings, periodElapsed):
+    def do_dispatch(self, readings, period_elapsed):
         # Naive dispatching.
-        if periodElapsed:
+        if period_elapsed:
             if self.configuration["twitter"]["enabled"]:
-                self.runForwarder(twitter.forward, self.configuration, readings)
+                run_forwarder(twitter.forward, self.configuration, readings)
             if self.configuration["safecast"]["enabled"]:
-                self.runForwarder(safecast.forward, self.configuration, readings)
+                run_forwarder(safecast.forward, self.configuration, readings)
             if self.configuration["radmon"]["enabled"]:
-                self.runForwarder(radmon.forward, self.configuration, readings)
+                run_forwarder(radmon.forward, self.configuration, readings)
         if self.configuration["plotly"]["enabled"]:
-            self.runForwarder(plotlyf.forward, self.configuration, readings)
+            run_forwarder(plotlyf.forward, self.configuration, readings)
         if self.configuration["gammaapi"]["enabled"]:
-            self.runForwarder(gammaapi.forward, self.configuration, readings)
+            run_forwarder(gammaapi.forward, self.configuration, readings)
         if self.configuration["zapier"]["enabled"]:
-            self.runForwarder(zapier.forward, self.configuration, readings)
-
-    def runForwarder(self, f, configuration, readings):
-        threading.Thread(target=f, args=(configuration, readings)).start()
+            run_forwarder(zapier.forward, self.configuration, readings)
