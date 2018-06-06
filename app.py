@@ -1,4 +1,4 @@
-from PiRadBox import socketio, app
+from gammabox import socketio, app
 import sys
 import logging
 import logging.handlers
