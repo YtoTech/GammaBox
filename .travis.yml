@@ -1,0 +1,14 @@
+language: python
+python:
+  - "3.4"
+  - "3.5"
+  - "3.6"
+  - "3.7-dev"
+
+install: "make install"
+
+script:
+  - make lint
+  # TODO Format using make format and look for git changes.
+  # See https://github.com/maciejczyzewski/bottomline/blob/4ca0cd7cc6dec76b9f6fd011dd2e63ebc462719e/.travis.yml#L29
+  - make test
