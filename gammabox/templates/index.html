@@ -193,6 +193,8 @@
         switchSound();
     }
     // Plot historical data.
+    // TODO Add error margin on the graph: make it pertinent and precise.
+    // For e.g. https://github.com/MonsieurV/ArduinoPocketGeiger#plot-in-real-time-with-python
     function doPlot() {
       // TODO To make it responsive at window resizing
       // https://plot.ly/javascript/responsive-fluid-layout/
@@ -207,6 +209,12 @@
       );
       Plotly.redraw(document.getElementById('plot-safecast-soubeyrac'));
     }
+    // Initial configuration: on-boarding.
+    // TODO Fetch /settings, if null, then means the Gamma Box
+    // is run for the first time: go for a little on-boarding,
+    // explaining how things works, settings location, first
+    // forwarders, etc.
+    // TODO For the moment, just redirect to settings.
   </script>
   <script type="text/babel">
     "use strict";
@@ -259,4 +267,3 @@
   </script>
 </body>
 </html>
-
