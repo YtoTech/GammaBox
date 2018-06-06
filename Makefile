@@ -5,6 +5,9 @@
 install:
 	pipenv install
 
+install-dev:
+	pipenv install --dev
+
 ################################################
 #            Tests & Code analysis             #
 ################################################
@@ -13,11 +16,11 @@ test:
 	pipenv run pytest
 
 lint:
+	pipenv run flake8 app.py gammabox
 	pipenv run pylint app.py gammabox
-	# TODO Add also flake8?
 
 format:
-	pipenv run yapf --recursive --in-place .
+	pipenv run yapf --recursive --in-place -vv .
 
 ################################################
 #              Running the app                 #

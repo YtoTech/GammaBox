@@ -7,7 +7,7 @@ python:
 
 install:
   - pip install pipenv
-  - pipenv install --dev --system
+  - make install-dev
 
 script:
   - make lint
