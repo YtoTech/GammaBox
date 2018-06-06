@@ -9,7 +9,7 @@ be less sensitive to issues from the backend or frontend processes.
 """
 from flask_socketio import SocketIO, emit
 from PiPocketGeiger import RadiationWatch
-from web_portal import app, forwarder
+from .web_portal import app, forwarder
 import time
 try:
     import queue
@@ -75,4 +75,6 @@ def listenToQueue():
             eventlet.sleep(0.1)
 
 eventlet.spawn_n(listenToQueue)
-radiationWatch.registerRadiationCallback(onRadiation)
+radiationWatch.register_radiation_callback(onRadiation)
+# TODO Also register noise an **dring** when noise present.
+# (Show a message + some recommendation for noise prevention)
