@@ -30,12 +30,12 @@ debug:
 	pipenv run python app.py --debug
 
 run:
-	pipenv run gunicorn -k eventlet -w 1 --bind 0.0.0.0:80 app:app
+	pipenv run gunicorn -k eventlet -w 1 --bind 0.0.0.0:8080 app:app
 
 PID=$(shell cat run.pid)
 
 start_gunicorn:
-	pipenv run gunicorn -k eventlet -w 1 --bind 0.0.0.0:80 app:app > /dev/null 2.&1 & echo $$! > run.pid
+	pipenv run gunicorn -k eventlet -w 1 --bind 0.0.0.0:8080 app:app > /dev/null 2.&1 & echo $$! > run.pid
 
 start:
 	pipenv run python app.py > /dev/null 2>&1 & echo $$! > run.pid
