@@ -1,6 +1,7 @@
 import json
-import threading
 import datetime
+import logging
+import threading
 from .forwarders import twitter, safecast, plotlyf, radmon, gammaapi, zapier
 
 
@@ -27,13 +28,11 @@ class Forwarder(object):
             with open(self.configuration_file_path, "rb") as file:
                 self.configuration = json.load(file)
         except Exception as exc:  # pylint: disable=broad-except
-            # TODO Use a true logger.
-            print(
-                "Failed to load configuration file {}. Cause:".format(
-                    self.configuration_file_path
-                )
+            logging.warning(
+                "Failed to load configuration file %s. Cause: %s",
+                self.configuration_file_path,
+                exc,
             )
-            print(exc)
             self.configuration = None
         self.next_publication_at = datetime.datetime.now()
 
