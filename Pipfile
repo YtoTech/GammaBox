@@ -7,7 +7,7 @@ name = "pypi"
 pylint = "*"
 pytest = "*"
 "flake8" = "*"
-black = "*"
+yapf = "*"
 
 [packages]
 gunicorn = ">=19.4.1"

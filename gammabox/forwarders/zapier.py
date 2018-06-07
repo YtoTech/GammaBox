@@ -15,4 +15,5 @@ def forward(configuration, readings):
     if request.status_code < 300:
         logging.info("Zapier Ok.")
     else:
-        logging.error("Zapier failed: %s - %s", request.status_code, request.text)
+        logging.error("Zapier failed: %s - %s", request.status_code,
+                      request.text)

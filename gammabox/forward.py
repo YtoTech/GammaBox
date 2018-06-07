@@ -46,9 +46,9 @@ class Forwarder(object):
         # Do the time have elapsed since last publication?
         if datetime.datetime.now() > self.next_publication_at:
             self.do_dispatch(readings, True)
-            self.next_publication_at = datetime.datetime.now() + datetime.timedelta(
-                minutes=int(self.configuration["publication"]["period"])
-            )
+            self.next_publication_at = datetime.datetime.now(
+            ) + datetime.timedelta(
+                minutes=int(self.configuration["publication"]["period"]))
         else:
             self.do_dispatch(readings, False)
 

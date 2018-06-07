@@ -18,7 +18,6 @@ from flask_socketio import SocketIO, emit
 from PiPocketGeiger import RadiationWatch
 from .web_portal import app, forwarder
 
-
 HISTORY_LENGTH = 500
 # pylint: disable=C0103
 radiation_watch = RadiationWatch(24, 23).setup()
@@ -45,7 +44,13 @@ def on_connect():
             json=True,
         )
     else:
-        emit("readings", {"cpm": None, "uSvh": None, "uSvhError": None}, json=True)
+        emit(
+            "readings", {
+                "cpm": None,
+                "uSvh": None,
+                "uSvhError": None
+            },
+            json=True)
     # Send historical data.
     emit("history", history, json=True)
 
