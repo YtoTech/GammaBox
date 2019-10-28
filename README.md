@@ -16,13 +16,3 @@ See more on https://gammabox.ytotech.com.
 
 [Yoan](mailto:yoan@ytotech.com)
 
-TODO:
-* Write a blog article
-* Design a nice logo, neutral and non-offensive, even positive (cartoon-like)
-* Create landing page for the project
-* Create a better case, put a https://www.stickermule.com/fr on it
-* Propose to sell some pre-assembled alpha-versions for enthusiasts ready to test it :)
-* Add a plug-and-play display (DOT matrix or LED display) of measurements and ray hits
-    * https://www.sparkfun.com/categories/51?filter_option%5Bsubcategory%5D%5B%5D=category_76&filter_option%5Bsubcategory%5D%5B%5D=category_89&filter_price_floor=&filter_price_ceil=
-    * https://www.sparkfun.com/products/13304
-    * https://www.sparkfun.com/products/14718
