@@ -21,3 +21,4 @@ TODO:
     * http://aircasting.org/
 * Safecast extension?
     * https://kithub.cc/safecast/
+* Report to https://www.openradiation.org/?
