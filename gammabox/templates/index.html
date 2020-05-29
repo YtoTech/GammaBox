@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="utf-8">
   <title>Gamma Box</title>
@@ -19,6 +20,7 @@
   <!-- <script src="/static/js/plotly.min.js"></script> -->
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 </head>
+
 <body>
   <div class="container">
     <div class="row">
@@ -36,7 +38,8 @@
       <div id="plot-safecast-soubeyrac" class="ten columns offset-by-one column"></div>
     </div>
     <div class="row u-txt-center">
-      <button id="enable-sound" class="button-primary" onclick="switchSound();" style="display: none;">Enable sound</button>
+      <button id="enable-sound" class="button-primary" onclick="switchSound();" style="display: none;">Enable
+        sound</button>
       <button id="disable-sound" onclick="switchSound();">Disable sound</button>
     </div>
     <div class="row u-txt-center">
@@ -51,46 +54,46 @@
     let currentReading = null;
     // Colors.
     function hexToRgb(hex) {
-        var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-        return result ? {
-            red: parseInt(result[1], 16),
-            green: parseInt(result[2], 16),
-            blue: parseInt(result[3], 16)
-        } : null;
+      var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+      return result ? {
+        red: parseInt(result[1], 16),
+        green: parseInt(result[2], 16),
+        blue: parseInt(result[3], 16)
+      } : null;
     }
-    const uSvhColorMapping = function(value) {
-        // Stolen from Safecast Map scale.
-        value = parseFloat(value);
-        if(!value)
-            return null;
-        if(value < 0.03)
-            return'#07060a';
-        if(value < 0.05)
-            return '#190f51';
-        if(value < 0.08)
-            return '#180dbb';
-        if(value < 0.12)
-            return '#304eff';
-        if(value < 0.16)
-            return '#36bcff';
-        if(value < 0.23)
-            return '#4bedff';
-        if(value < 0.31)
-            return '#c094ff';
-        if(value < 0.43)
-            return '#fa24ff';
-        if(value < 0.60)
-            return '#ff038b';
-        if(value < 0.87)
-            return '#ff0336';
-        if(value < 1.31)
-            return '#ff5c03';
-        if(value < 2.13)
-            return '#ffc503';
-        if(value < 3.99)
-            return '#ffff1c';
-        if(value > 10.09)
-            return '#ffff93';
+    const uSvhColorMapping = function (value) {
+      // Stolen from Safecast Map scale.
+      value = parseFloat(value);
+      if (!value)
+        return null;
+      if (value < 0.03)
+        return '#07060a';
+      if (value < 0.05)
+        return '#190f51';
+      if (value < 0.08)
+        return '#180dbb';
+      if (value < 0.12)
+        return '#304eff';
+      if (value < 0.16)
+        return '#36bcff';
+      if (value < 0.23)
+        return '#4bedff';
+      if (value < 0.31)
+        return '#c094ff';
+      if (value < 0.43)
+        return '#fa24ff';
+      if (value < 0.60)
+        return '#ff038b';
+      if (value < 0.87)
+        return '#ff0336';
+      if (value < 1.31)
+        return '#ff5c03';
+      if (value < 2.13)
+        return '#ffc503';
+      if (value < 3.99)
+        return '#ffff1c';
+      if (value > 10.09)
+        return '#ffff93';
     };
     // Life circle stuff.
     const GRADIENT_COLOR = {
@@ -116,7 +119,7 @@
     const INITIAL_FACTOR = 1;
     const DESCENT_FACTOR = 0.01;
     const DESCENT_DELAY = 30;
-    function setLifeCircle (color, factor) {
+    function setLifeCircle(color, factor) {
       let gradient = BASE_GRADIENT;
       GRADIENT_PARTS.forEach(function (part) {
         gradient += ', rgba(' + color.red + ', ' + color.green + ', ' + color.blue + ', ' + part.alpha * factor + ') ' + part.position + '%';
@@ -128,7 +131,7 @@
     function processDescentFactor(factor) {
       return factor - DESCENT_FACTOR;
     }
-    function beginDescent () {
+    function beginDescent() {
       clearTimeout(lifeCircleTimeout);
       lifeCircle += 0.8;
       let color = GRADIENT_COLOR;
@@ -155,31 +158,33 @@
     let police = new Audio("/static/click.wav");
     police.loop = false;
     let soundEnabled = true;
-    let readingsHistory = [ { x: [], y: [], type: 'scatter', marker: {
-        size: 5, color: [], line: { color: [], colorscale: [[0, 'rgb(0,0,255)'], [1, 'rgb(255,0,0)']] }, colorbar: { title: 'uSv/h'}
-    }, mode: 'lines+markers' } ];
+    let readingsHistory = [{
+      x: [], y: [], type: 'scatter', marker: {
+        size: 5, color: [], line: { color: [], colorscale: [[0, 'rgb(0,0,255)'], [1, 'rgb(255,0,0)']] }, colorbar: { title: 'uSv/h' }
+      }, mode: 'lines+markers'
+    }];
     const socket = io.connect('http://' + document.domain + ':' + location.port);
-    socket.on('connect', function() {
-      socket.on('ray', function(message) {
+    socket.on('connect', function () {
+      socket.on('ray', function (message) {
         if (soundEnabled) {
           police.play();
         }
         beginDescent();
       });
-      socket.on('history', function(message) {
-        message.forEach(function(dataPoint) {
+      socket.on('history', function (message) {
+        message.forEach(function (dataPoint) {
           readingsHistory[0].x.push(dataPoint.timestamp.replace('T', ' ').replace('Z', ''));
           readingsHistory[0].y.push(dataPoint.uSvh);
           readingsHistory[0].marker.color.push(uSvhColorMapping(dataPoint.uSvh));
         });
         doPlot();
       });
-      socket.on('readings', function(data) {
+      socket.on('readings', function (data) {
         currentReading = data;
       });
     });
     function switchSound() {
-      if(soundEnabled) {
+      if (soundEnabled) {
         soundEnabled = false;
         $("#enable-sound").show();
         $("#disable-sound").hide();
@@ -190,8 +195,8 @@
       }
       localStorage.setItem('soundEnabled', soundEnabled);
     }
-    if(localStorage.getItem('soundEnabled') === 'false') {
-        switchSound();
+    if (localStorage.getItem('soundEnabled') === 'false') {
+      switchSound();
     }
     // Plot historical data.
     // TODO Add error margin on the graph: make it pertinent and precise.
@@ -204,7 +209,7 @@
         readingsHistory,
         {
           yaxis: {
-          title: 'Radiation dose (uSv/h)'
+            title: 'Radiation dose (uSv/h)'
           }
         }
       );
@@ -221,19 +226,20 @@
     "use strict";
     var Readings = React.createClass({
       displayName: "Readings",
-      getInitialState: function() {
+      getInitialState: function () {
         return { cpm: null, uSvh: null, uSvhError: null };
       },
-      componentDidMount: function() {
+      componentDidMount: function () {
         socket.on('readings', this.handleData);
       },
-      handleData: function(data) {
-        if(data.cpm === null)
+      handleData: function (data) {
+        console.log(data);
+        if (data.cpm === null)
           data.cpm = '-';
-        if(data.uSvh === null)
+        if (data.uSvh === null)
           data.uSvh = '-';
         this.setState(data);
-        if(data.uSvh !== null && readingsHistory[0].x.length > 0) {
+        if (data.uSvh !== null && readingsHistory[0].x.length > 0) {
           readingsHistory[0].x.push(data.timestamp.replace('T', ' ').replace('Z', ''));
           readingsHistory[0].y.push(data.uSvh);
           readingsHistory[0].marker.color.push(uSvhColorMapping(data.uSvh));
@@ -245,9 +251,9 @@
           Plotly.redraw(document.getElementById('plot-safecast-soubeyrac'));
         }
       },
-      render: function() {
+      render: function () {
         var uSvhStyle = {
-            color: uSvhColorMapping(this.state.uSvh)
+          color: uSvhColorMapping(this.state.uSvh)
         };
         return (
           <div className="row readings">
@@ -267,4 +273,5 @@
     );
   </script>
 </body>
+
 </html>

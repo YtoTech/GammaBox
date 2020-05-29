@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="utf-8">
   <title>RadBox Settings</title>
@@ -16,6 +17,7 @@
   <script src="/static/js/react-dom.min.js"></script>
   <script src="/static/js/babel-core-browser.min.js"></script>
 </head>
+
 <body>
   <div class="container">
     <div class="row">
@@ -29,36 +31,40 @@
     "use strict";
     var Settings = React.createClass({
       displayName: "Settings",
-      getInitialState: function() {
+      getInitialState: function () {
         return {
           changed: false,
           publication: {
-            period: 15 },
+            period: 15
+          },
           location: {
-            name: null, latitude: null, longitude: null, height: null },
+            name: null, latitude: null, longitude: null, height: null
+          },
           twitter: {
             enabled: false, appKey: null, appSecret: null,
-            oauthToken: null, oauthTokenSecret: null },
+            oauthToken: null, oauthTokenSecret: null
+          },
           safecast: { enabled: false, apiKey: null, production: false },
           plotly: {
             enabled: false, username: null, apiKey: null, streamingToken: null,
-            plotTitle: null },
+            plotTitle: null
+          },
           radmon: { enabled: false, username: null, password: null },
           zapier: { enabled: false, webhookUrl: null },
           gammaapi: { enabled: false, username: null, password: null }
         };
       },
-      componentDidMount: function() {
+      componentDidMount: function () {
         // Do an Ajax call to get settings configuration from server.
-        this.serverRequest = $.getJSON('/api/settings', function(settings) {
+        this.serverRequest = $.getJSON('/api/settings', function (settings) {
           settings['changed'] = false;
           this.setState(settings);
         }.bind(this));
       },
-      componentWillUnmount: function() {
+      componentWillUnmount: function () {
         this.serverRequest.abort();
       },
-      handleSubmit: function(e) {
+      handleSubmit: function (e) {
         e.preventDefault();
         // Do an Ajax call to save configuration to server.
         this.serverRequest = $.ajax({
@@ -67,17 +73,17 @@
           data: JSON.stringify(this.state),
           contentType: 'application/json',
           dataType: 'json',
-          success: function() {
-            this.setState({changed: false});
+          success: function () {
+            this.setState({ changed: false });
           }.bind(this)
         });
       },
-      handleChange: function(field, e) {
+      handleChange: function (field, e) {
         // Is that not a bit hacky?
         var newState = {};
         var fieldKeys = field.split('.');
         newState[fieldKeys[0]] = this.state[fieldKeys[0]];
-        if(e.target.type === 'checkbox') {
+        if (e.target.type === 'checkbox') {
           newState[fieldKeys[0]][fieldKeys[1]] = e.target.checked;
         } else {
           newState[fieldKeys[0]][fieldKeys[1]] = e.target.value;
@@ -85,7 +91,7 @@
         newState['changed'] = true;
         this.setState(newState);
       },
-      render: function() {
+      render: function () {
         // TODO We could make a component for each configuration part.
         // The component will manage the Enabled/Disabled feature,
         // then have a list of fields directly binded to the settings
@@ -124,7 +130,7 @@
               </div>
             </div>
             <h4>Twitter <input type="checkbox" checked={this.state.twitter.enabled} onChange={this.handleChange.bind(this, 'twitter.enabled')} /></h4>
-            <div id="twitter-settings" style={this.state.twitter.enabled ? {display: 'block'} : {display: 'none'}}>
+            <div id="twitter-settings" style={this.state.twitter.enabled ? { display: 'block' } : { display: 'none' }}>
               <div className="row">
                 <div className="six columns">
                   <label htmlFor="twitterAppKey">App Key</label>
@@ -147,21 +153,21 @@
               </div>
             </div>
             <h4>Safecast <input type="checkbox" checked={this.state.safecast.enabled} onChange={this.handleChange.bind(this, 'safecast.enabled')} /></h4>
-            <div id="safecast-settings" style={this.state.safecast.enabled ? {display: 'block'} : {display: 'none'}}>
+            <div id="safecast-settings" style={this.state.safecast.enabled ? { display: 'block' } : { display: 'none' }}>
               <div className="row">
                 <div className="six columns">
                   <label htmlFor="safecastApiKey">API Key</label>
                   <input className="u-full-width" type="text" id="safecastApiKey" value={this.state.safecast.apiKey} onChange={this.handleChange.bind(this, 'safecast.apiKey')} />
                 </div>
                 <label className="six columns checkbox-container">
-                  <br/>
+                  <br />
                   <input type="checkbox" checked={this.state.safecast.production} onChange={this.handleChange.bind(this, 'safecast.production')} />
                   <span class="label-body">Production server</span>
                 </label>
               </div>
             </div>
             <h4>YtoTech Gamma API <input type="checkbox" checked={this.state.gammaapi.enabled} onChange={this.handleChange.bind(this, 'gammaapi.enabled')} /></h4>
-            <div id="gammaapi-settings" style={this.state.gammaapi.enabled ? {display: 'block'} : {display: 'none'}}>
+            <div id="gammaapi-settings" style={this.state.gammaapi.enabled ? { display: 'block' } : { display: 'none' }}>
               <div className="row">
                 <div className="six columns">
                   <label htmlFor="gammaapiUsername">Username</label>
@@ -174,7 +180,7 @@
               </div>
             </div>
             <h4>Plotly <input type="checkbox" checked={this.state.plotly.enabled} onChange={this.handleChange.bind(this, 'plotly.enabled')} /></h4>
-            <div id="plotly-settings" style={this.state.plotly.enabled ? {display: 'block'} : {display: 'none'}}>
+            <div id="plotly-settings" style={this.state.plotly.enabled ? { display: 'block' } : { display: 'none' }}>
               <div className="row">
                 <div className="six columns">
                   <label htmlFor="plotlyUsername">Username</label>
@@ -197,7 +203,7 @@
               </div>
             </div>
             <h4>Radmon <input type="checkbox" checked={this.state.radmon.enabled} onChange={this.handleChange.bind(this, 'radmon.enabled')} /></h4>
-            <div id="radmon-settings" style={this.state.radmon.enabled ? {display: 'block'} : {display: 'none'}}>
+            <div id="radmon-settings" style={this.state.radmon.enabled ? { display: 'block' } : { display: 'none' }}>
               <div className="row">
                 <div className="six columns">
                   <label htmlFor="radmonUsername">Username</label>
@@ -211,7 +217,7 @@
             </div>
             <h4>Zapier <input type="checkbox" checked={this.state.zapier.enabled} onChange={this.handleChange.bind(this, 'zapier.enabled')} /></h4>
             <p>Access thousands of integrations with <a target="_blank" href="https://zapier.com/">Zapier</a>.</p>
-            <div id="zapier-settings" style={this.state.zapier.enabled ? {display: 'block'} : {display: 'none'}}>
+            <div id="zapier-settings" style={this.state.zapier.enabled ? { display: 'block' } : { display: 'none' }}>
               <div className="row">
                 <div className="six columns">
                   <label htmlFor="zapierWebhookUrl">Webhook URL</label>
@@ -232,4 +238,5 @@
     );
   </script>
 </body>
+
 </html>
