@@ -44,13 +44,7 @@ def on_connect():
             json=True,
         )
     else:
-        emit(
-            "readings", {
-                "cpm": None,
-                "uSvh": None,
-                "uSvhError": None
-            },
-            json=True)
+        emit("readings", {"cpm": None, "uSvh": None, "uSvhError": None}, json=True)
     # Send historical data.
     emit("history", history, json=True)
 

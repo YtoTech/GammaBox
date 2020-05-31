@@ -20,7 +20,7 @@ lint:
 	pipenv run pylint app.py gammabox
 
 format:
-	pipenv run yapf --recursive --in-place -vv --style google .
+	pipenv run black .
 
 ################################################
 #              Running the app                 #

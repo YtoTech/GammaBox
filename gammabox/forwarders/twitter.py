@@ -13,6 +13,8 @@ def forward(configuration, readings):
     )
     twitter.update_status(
         status="My #RadBox now reads: "
-        "{0} uSv/h +/- {1} -- {2} CPM".format(readings["uSvh"], readings[
-            "uSvhError"], readings["cpm"]))
+        "{0} uSv/h +/- {1} -- {2} CPM".format(
+            readings["uSvh"], readings["uSvhError"], readings["cpm"]
+        )
+    )
     logging.info("Twitter Ok.")
