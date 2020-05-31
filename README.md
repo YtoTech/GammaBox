@@ -57,6 +57,13 @@ It may support other sensors by creating appropriate drivers. Contributions are 
 
 ## TODO
 
+* Create systemd service file + doc to install and enable
+* Migrate backend to Go
+    * Go install on RPi
+        * https://gist.github.com/simoncos/49463a8b781d63b5fb8a3b666e566bb5
+        * https://www.e-tinkers.com/2019/06/better-way-to-install-golang-go-on-raspberry-pi/
+    * create a WiringPi based driver (in C/C++)
+    * https://github.com/alexellis/rpi/
 * Website
     ** GitHub Pages and/or https://gammabox.ytotech.com
 * Cloud relay for Gamma Box
