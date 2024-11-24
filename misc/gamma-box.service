@@ -3,7 +3,7 @@ Description=Gamma Box
 After=network.target
 
 [Service]
-ExecStart=pipenv run gunicorn -k eventlet -w 1 --bind 0.0.0.0:9898 app:app
+ExecStart=/home/canard/.local/bin/pipenv run gunicorn -k eventlet -w 1 --bind 0.0.0.0:9898 app:app
 WorkingDirectory=/home/canard/git/GammaBox
 # For old boards, force revision code
 # See https://rpi-lgpio.readthedocs.io/en/latest/differences.html#pi-revision

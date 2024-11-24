@@ -56,12 +56,18 @@ http://raspberrypi:9898
 
 ### Systemd installation
 
-Follow the template in `misc/gamma-box.service` (modify `WorkingDirectory` and `User` following your installation). You can then install and activate the service to runs as a daemon:
+Follow the template in `misc/gamma-box.service` (modify `WorkingDirectory`, `ExecStart` and `User` following your installation). You can then install and activate the service to runs as a daemon:
 
 ```sh
 sudo cp ./misc/gamma-box.service /etc/systemd/system/
 sudo systemctl daemon-reload
-sudo systemctl enable gamma-box.service
+sudo systemctl enable gamma-box.service --now
+```
+
+Check its logs:
+
+```sh
+sudo journalctl -u gamma-box.service -f -n 100
 ```
 
 -------
