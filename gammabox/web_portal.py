@@ -29,13 +29,16 @@ def settings():
 
 @app.route("/api/settings", methods=["GET"])
 def api_settings_get():
-    with open(RADBOX_SETTINGS_FILE, "rb") as file:
-        return jsonify(json.load(file))
+    try:
+        with open(RADBOX_SETTINGS_FILE, "rb") as file:
+            return jsonify(json.load(file))
+    except Exception as exc:
+        return "", 404
 
 
 @app.route("/api/settings", methods=["POST"])
 def api_settings_post():
-    with open(RADBOX_SETTINGS_FILE, "wb") as file:
+    with open(RADBOX_SETTINGS_FILE, "w", encoding="utf8") as file:
         json.dump(request.get_json(), file)
     # TODO Use message passing.
     forwarder.reload_configuration()

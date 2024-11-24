@@ -30,15 +30,9 @@ debug:
 	pipenv run python app.py --debug
 
 run:
-	pipenv run gunicorn -k eventlet -w 1 --bind 0.0.0.0:8080 app:app
+	pipenv run gunicorn -k eventlet -w 1 --bind 0.0.0.0:9898 app:app
 
-PID=$(shell cat run.pid)
-
-start_gunicorn:
-	pipenv run gunicorn -k eventlet -w 1 --bind 0.0.0.0:8080 app:app > /dev/null 2>&1 & echo $$! > run.pid
-
-start:
-	pipenv run python app.py > /dev/null 2>&1 & echo $$! > run.pid
-
-stop:
-	kill ${PID}
+install-systemd-unit:
+	sudo cp ./misc/gamma-box.service /etc/systemd/system/
+	sudo systemctl daemon-reload
+	sudo systemctl enable gamma-box.service

@@ -18,7 +18,7 @@ Technically Gamma Box is a box currently composed of a [Raspberry Pi](https://ww
 
 ## Shopping list
 
-TODO
+The Pocket Geiger is not sold anymore by Radiation Watch, neither by [Sparkfun](https://www.sparkfun.com/products/retired/14209). There remains some units to be sold by [RoboDyne](https://www.robo-dyne.com/prodotto/pocket-geiger-radiation-sensor-type-5/?lang=it) and [Hellas Digital](https://www.hellasdigital.gr/electronics/sensors/radiation/pocket-geiger-radiation-sensor-type-5/?sl=en).
 
 ## Assembling and Wiring
 
@@ -26,13 +26,42 @@ See [PiPocketGeiger](https://github.com/MonsieurV/PiPocketGeiger) instructions f
 
 ## Installating the Gamma Box application
 
-TODO pip package for gammabox?
+First install the GPIO library and its dependencies.
+Follow [PiPocketGeiger](https://github.com/MonsieurV/PiPocketGeiger) instructions.
+
+We'll also use pipenv:
 
 ```sh
-# Ensure RPi.GPIO library is installed.
-# Instruction here for Raspbian. See https://sourceforge.net/p/raspberry-gpio-python/wiki/install/
-sudo apt-get install python3-rpi.gpio
-sudo pip3 install PiPocketGeiger
+pip install pipenv --user --break-system-packages
+```
+
+(Follow the instructions to add pipenv to PATH)
+
+Install the repository dependencies (mainly `PiPocketGeiger`):
+
+```sh
+pipenv install
+```
+
+You can try launching the server with
+
+```sh
+make run
+```
+
+This launch the web server on port `9898`.
+You can access it (replacing your RPi host):
+
+http://raspberrypi:9898
+
+### Systemd installation
+
+Follow the template in `misc/gamma-box.service` (modify `WorkingDirectory` and `User` following your installation). You can then install and activate the service to runs as a daemon:
+
+```sh
+sudo cp ./misc/gamma-box.service /etc/systemd/system/
+sudo systemctl daemon-reload
+sudo systemctl enable gamma-box.service
 ```
 
 -------
@@ -53,25 +82,6 @@ It may support other sensors by creating appropriate drivers. Contributions are 
 
 [Ask gently](https://github.com/MonsieurV/GammaBox/issues) to get help for making it work. :-)
 
--------
-
-## TODO
-
-* Create systemd service file + doc to install and enable
-* Migrate backend to Go
-    * Go install on RPi
-        * https://gist.github.com/simoncos/49463a8b781d63b5fb8a3b666e566bb5
-        * https://www.e-tinkers.com/2019/06/better-way-to-install-golang-go-on-raspberry-pi/
-    * create a WiringPi based driver (in C/C++)
-    * https://github.com/alexellis/rpi/
-* Website
-    ** GitHub Pages and/or https://gammabox.ytotech.com
-* Cloud relay for Gamma Box
-    * allows to acces to readings from everywhere
-        * create simple owner app with React-Native
-    * simple sensor page to be shared
-    * transmitting settings
-    * community readings aggregation and open-access to data flux
 
 -------
 

@@ -1,6 +1,7 @@
 """
 Launch the Gamma Box.
 """
+
 import sys
 import logging
 import logging.handlers
@@ -21,4 +22,4 @@ if __name__ == "__main__":
     if "-d" in sys.argv or "--debug" in sys.argv:
         socketio.debug = True
     # TODO Make it configurable.
-    socketio.run(app, port=8080, host="0.0.0.0")
+    socketio.run(app, port=9898, host="0.0.0.0")

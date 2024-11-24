@@ -2,7 +2,8 @@ import json
 import datetime
 import logging
 import threading
-from .forwarders import twitter, safecast, plotlyf, radmon, gammaapi, zapier
+
+# from .forwarders import twitter, safecast, plotlyf, radmon, gammaapi, zapier
 
 
 def run_forwarder(forwader, configuration, readings):
@@ -56,14 +57,26 @@ class Forwarder(object):
         # Naive dispatching.
         if period_elapsed:
             if self.configuration["twitter"]["enabled"]:
+                from .forwarders import twitter
+
                 run_forwarder(twitter.forward, self.configuration, readings)
             if self.configuration["safecast"]["enabled"]:
+                from .forwarders import safecast
+
                 run_forwarder(safecast.forward, self.configuration, readings)
             if self.configuration["radmon"]["enabled"]:
+                from .forwarders import radmon
+
                 run_forwarder(radmon.forward, self.configuration, readings)
         if self.configuration["plotly"]["enabled"]:
+            from .forwarders import plotlyf
+
             run_forwarder(plotlyf.forward, self.configuration, readings)
         if self.configuration["gammaapi"]["enabled"]:
+            from .forwarders import gammaapi
+
             run_forwarder(gammaapi.forward, self.configuration, readings)
         if self.configuration["zapier"]["enabled"]:
+            from .forwarders import zapier
+
             run_forwarder(zapier.forward, self.configuration, readings)

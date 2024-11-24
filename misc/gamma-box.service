@@ -1,0 +1,18 @@
+[Unit]
+Description=Gamma Box
+After=network.target
+
+[Service]
+ExecStart=pipenv run gunicorn -k eventlet -w 1 --bind 0.0.0.0:9898 app:app
+WorkingDirectory=/home/canard/git/GammaBox
+# For old boards, force revision code
+# See https://rpi-lgpio.readthedocs.io/en/latest/differences.html#pi-revision
+# https://github.com/raspberrypi/documentation/issues/1888
+# Environment="RPI_LGPIO_REVISION=900032"
+Restart=always
+RestartSec=30s
+User=canard
+Type=simple
+
+[Install]
+WantedBy=multi-user.target

@@ -1,4 +1,23 @@
-TODO:
+## Code
+
+* Create systemd service file + doc to install and enable
+* Migrate backend to Go
+    * Go install on RPi
+        * https://gist.github.com/simoncos/49463a8b781d63b5fb8a3b666e566bb5
+        * https://www.e-tinkers.com/2019/06/better-way-to-install-golang-go-on-raspberry-pi/
+    * create a WiringPi based driver (in C/C++)
+    * https://github.com/alexellis/rpi/
+* Website
+    ** GitHub Pages and/or https://gammabox.ytotech.com
+* Cloud relay for Gamma Box
+    * allows to acces to readings from everywhere
+        * create simple owner app with React-Native
+    * simple sensor page to be shared
+    * transmitting settings
+    * community readings aggregation and open-access to data flux
+
+## Publicize
+
 * Write a blog article
 * Design a nice logo, neutral and non-offensive, even positive (cartoon-like)
 * Create landing page for the project

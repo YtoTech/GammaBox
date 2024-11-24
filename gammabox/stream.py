@@ -7,6 +7,7 @@ service (to store and forward the messages) and a frontend
 service (to broadcast them). That way the reading part will
 be less sensitive to issues from the backend or frontend processes.
 """
+
 try:
     import queue
 except ImportError:
@@ -41,12 +42,11 @@ def on_connect():
                 "uSvh": history[-1]["uSvh"],
                 "uSvhError": history[-1]["uSvhError"],
             },
-            json=True,
         )
     else:
-        emit("readings", {"cpm": None, "uSvh": None, "uSvhError": None}, json=True)
+        emit("readings", {"cpm": None, "uSvh": None, "uSvhError": None})
     # Send historical data.
-    emit("history", history, json=True)
+    emit("history", history)
 
 
 def on_radiation():
@@ -65,7 +65,7 @@ def listen_to_queue():
             readings = radiation_watch.status()
             readings["timestamp"] = datetime.datetime.now().isoformat() + "Z"
             # Send current readings.
-            socketio.emit("readings", readings, json=True)
+            socketio.emit("readings", readings)
             # Persist historical data.
             history.append(readings)
             while len(history) > HISTORY_LENGTH:
@@ -78,5 +78,5 @@ def listen_to_queue():
 
 eventlet.spawn_n(listen_to_queue)
 radiation_watch.register_radiation_callback(on_radiation)
-# TODO Also register noise an **dring** when noise present.
+# TODO Also register noise and **dring** when noise present.
 # (Show a message + some recommendation for noise prevention)
