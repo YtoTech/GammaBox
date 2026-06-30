@@ -469,21 +469,20 @@
         },
         "python-engineio": {
             "hashes": [
-                "sha256:8c101cd170e400dc4e970cd523325cde22df8fc25140953f379327055d701a6b",
-                "sha256:a7732e99cfb7db6ed1aee31f18d7f73bbae086a92f31dee019bc646155d9684e"
+                "sha256:1f60ecaf1358190f0e26c48c578a60428dc02a8f1295bc3dbf53d1b31116821f",
+                "sha256:572b7783e341fed21edbc7cea297ccd378dad79265fdde96aa4664420a7c06c9"
             ],
-            "index": "pypi",
             "markers": "python_version >= '3.8'",
-            "version": "==4.13.2"
+            "version": "==4.13.3"
         },
         "python-socketio": {
             "hashes": [
-                "sha256:7de5ad8a55efc33e17897f6cf91d20168d3d259f98c38d38e2940af83136d6f8",
-                "sha256:d057737f658b3948392ff452a5c865c5ccc969859c37cf095a73393ce755f98e"
+                "sha256:ad88c228d921646efa436c0a0df217e364ef30ec072df4041484e54d49c15989",
+                "sha256:bef2da3374fd533aed4297f57b4f6512b52aa51604cb0da2165f401291c5ca20"
             ],
             "index": "pypi",
             "markers": "python_version >= '3.8'",
-            "version": "==5.14.0"
+            "version": "==5.16.2"
         },
         "requests": {
             "hashes": [
